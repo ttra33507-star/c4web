@@ -1,0 +1,77 @@
+{% extends "dashboard/layout.html" %}
+
+{% set title = "Overview" %}
+
+{% block dashboard_content %}
+<div class="grid gap-6">
+    <header class="rounded-2xl border border-slate-800 bg-slate-900/60 p-8 shadow-lg backdrop-blur">
+        <h1 class="text-2xl font-semibold text-white">Operations Snapshot</h1>
+        <p class="mt-2 text-sm text-slate-400">
+            Review the latest status across your licenses, orders, and payment activity.
+        </p>
+        <dl class="mt-8 grid gap-4 sm:grid-cols-3">
+            <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-5 text-slate-300">
+                <dt class="text-sm text-slate-400">Active Licenses</dt>
+                <dd class="mt-2 text-3xl font-semibold text-white">{{ licenses|length }}</dd>
+            </div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-5 text-slate-300">
+                <dt class="text-sm text-slate-400">Orders</dt>
+                <dd class="mt-2 text-3xl font-semibold text-white">{{ orders|length }}</dd>
+            </div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-5 text-slate-300">
+                <dt class="text-sm text-slate-400">Payments</dt>
+                <dd class="mt-2 text-3xl font-semibold text-white">{{ history.count }}</dd>
+            </div>
+        </dl>
+    </header>
+
+    <div class="grid gap-6 lg:grid-cols-2">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-lg backdrop-blur">
+            <h2 class="text-lg font-semibold text-white">Recent Transactions</h2>
+            <p class="mt-2 text-sm text-slate-400">
+                ABA PayWay confirmations will appear here.
+            </p>
+            <ul class="mt-4 divide-y divide-slate-800/80 text-sm">
+                {% if history.transactions %}
+                    {% for txn in history.transactions[:5] %}
+                        <li class="flex items-center justify-between py-3">
+                            <div>
+                                <p class="font-medium text-white">{{ txn.tran_id | default("Unknown #") }}</p>
+                                <p class="text-xs text-slate-400">{{ txn.amount | default("0.00") }} {{ txn.currency | default("USD") }}</p>
+                            </div>
+                            <span class="inline-flex items-center rounded-full bg-emerald-500/15 px-3 py-1 text-xs text-emerald-300">
+                                {{ txn.status | default("pending") | capitalize }}
+                            </span>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="py-6 text-center text-slate-500">No transactions yet.</li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-lg backdrop-blur">
+            <h2 class="text-lg font-semibold text-white">Quick Actions</h2>
+            <div class="mt-6 grid gap-4">
+                <a href="{{ url_for('main.services_page') }}" class="card hover:shadow-glow">
+                    <p class="text-sm text-slate-400">Browse services and launch new orders.</p>
+                    <span class="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-emerald-300">
+                        View services
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414-1.414L13.586 10H4a1 1 0 110-2h9.586l-3.293-3.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                </a>
+                <a href="{{ url_for('main.transactions') }}" class="card hover:shadow-glow">
+                    <p class="text-sm text-slate-400">Reconcile all payments recorded via PayWay.</p>
+                    <span class="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-emerald-300">
+                        Review transactions
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414-1.414L13.586 10H4a1 1 0 110-2h9.586l-3.293-3.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

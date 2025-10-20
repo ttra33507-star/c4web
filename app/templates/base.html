@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FARMREEL{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-slate-950 text-slate-100 font-body">
+    <div class="flex min-h-screen flex-col">
+        <header class="border-b border-slate-900/80 bg-slate-950/70 backdrop-blur">
+            <nav class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
+                <a href="{{ url_for('main.home') }}" class="flex items-center gap-3">
+                    <img src="{{ url_for('static', filename='images/logo C4 HUB.png') }}" alt="Farmreel logo" class="h-10 w-10 rounded-lg border border-slate-800 bg-slate-900/60 object-cover shadow">
+                    <div class="flex flex-col">
+                        <span class="font-display text-xl font-semibold text-white">FARMREEL</span>
+                        <span class="text-xs uppercase tracking-[0.28em] text-emerald-300">Digital Commerce</span>
+                    </div>
+                </a>
+                <div class="hidden items-center gap-1 rounded-full border border-slate-800 bg-slate-900/70 p-1 text-sm font-medium text-slate-300 shadow-inner md:flex">
+                    <a href="{{ url_for('main.home') }}" class="rounded-full px-4 py-2 transition {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.home' else 'hover:text-white hover:bg-slate-800/60' }}">Home</a>
+                    <a href="{{ url_for('main.services_page') }}" class="rounded-full px-4 py-2 transition {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.services_page' else 'hover:text-white hover:bg-slate-800/60' }}">Services</a>
+                    <a href="{{ url_for('main.contact') }}" class="rounded-full px-4 py-2 transition {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.contact' else 'hover:text-white hover:bg-slate-800/60' }}">Contact</a>
+                    <a href="{{ url_for('main.dashboard') }}" class="rounded-full px-4 py-2 transition {{ 'bg-slate-800/80 text-white' if request.endpoint and request.endpoint.startswith('main.') and 'dashboard' in request.endpoint else 'hover:text-white hover:bg-slate-800/60' }}">Dashboard</a>
+                </div>
+                <a href="{{ url_for('main.services_page') }}" class="btn-primary hidden md:inline-flex">Start a project</a>
+                <button type="button" class="inline-flex items-center rounded-xl border border-slate-700 bg-slate-900/80 p-2 text-slate-200 md:hidden" aria-label="Toggle menu" data-mobile-nav-toggle aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </nav>
+            <div class="md:hidden" data-mobile-nav hidden>
+                <div class="fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm transition-opacity" data-mobile-nav-overlay></div>
+                <div class="fixed inset-x-4 top-20 z-50 origin-top rounded-3xl border border-slate-800 bg-slate-900/95 p-6 shadow-2xl transition-transform">
+                    <nav class="space-y-4 text-sm font-medium text-slate-300">
+                        <a href="{{ url_for('main.home') }}" class="block rounded-xl px-4 py-3 {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.home' else 'hover:bg-slate-800/60 hover:text-white' }}">Home</a>
+                        <a href="{{ url_for('main.services_page') }}" class="block rounded-xl px-4 py-3 {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.services_page' else 'hover:bg-slate-800/60 hover:text-white' }}">Services</a>
+                        <a href="{{ url_for('main.contact') }}" class="block rounded-xl px-4 py-3 {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.contact' else 'hover:bg-slate-800/60 hover:text-white' }}">Contact</a>
+                        <a href="{{ url_for('main.dashboard') }}" class="block rounded-xl px-4 py-3 {{ 'bg-slate-800/80 text-white' if request.endpoint and request.endpoint.startswith('main.') and 'dashboard' in request.endpoint else 'hover:bg-slate-800/60 hover:text-white' }}">Dashboard</a>
+                    </nav>
+                    <a href="{{ url_for('main.services_page') }}" class="btn-primary mt-6 w-full justify-center">Start a project</a>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="border-t border-slate-900/80 bg-slate-950/70">
+            <div class="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-12 sm:px-6 lg:flex-row lg:items-start lg:justify-between lg:px-8">
+                <div class="max-w-md">
+                    <p class="font-display text-lg font-semibold text-white">FARMREEL</p>
+                    <p class="mt-3 text-sm text-slate-400">
+                        Tailored workspace products paired with secure ABA PayWay checkout integration.
+                    </p>
+                    <div class="mt-6 flex items-center gap-3 text-xs uppercase tracking-[0.25em] text-slate-500">
+                        <span>&copy; {{ current_year }} Farmreel</span>
+                        <span class="h-1 w-1 rounded-full bg-slate-700"></span>
+                        <span>All rights reserved</span>
+                    </div>
+                </div>
+                <div class="grid flex-1 gap-8 sm:grid-cols-2">
+                    <div>
+                        <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-400">Legal</h3>
+                        <ul class="mt-3 space-y-2 text-sm text-slate-300">
+                            <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                            <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                            <li><a href="#" class="hover:text-white">License Agreement</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-400">Support</h3>
+                        <ul class="mt-3 space-y-2 text-sm text-slate-300">
+                            <li><a href="mailto:support@farmreel.com" class="hover:text-white">support@farmreel.com</a></li>
+                            <li><a href="tel:+15551234567" class="hover:text-white">+1 (555) 123-4567</a></li>
+                            <li><a href="{{ url_for('main.contact') }}" class="hover:text-white">Contact form</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script>
+        (function () {
+            const toggle = document.querySelector("[data-mobile-nav-toggle]");
+            const drawer = document.querySelector("[data-mobile-nav]");
+            const overlay = document.querySelector("[data-mobile-nav-overlay]");
+            if (!toggle || !drawer || !overlay) return;
+
+            const close = () => {
+                drawer.setAttribute("hidden", "hidden");
+                toggle.setAttribute("aria-expanded", "false");
+                document.body.classList.remove("overflow-hidden");
+            };
+
+            const open = () => {
+                drawer.removeAttribute("hidden");
+                toggle.setAttribute("aria-expanded", "true");
+                document.body.classList.add("overflow-hidden");
+            };
+
+            toggle.addEventListener("click", () => {
+                const isOpen = toggle.getAttribute("aria-expanded") === "true";
+                if (isOpen) {
+                    close();
+                } else {
+                    open();
+                }
+            });
+
+            overlay.addEventListener("click", close);
+
+            drawer.querySelectorAll("a").forEach((link) => {
+                link.addEventListener("click", close);
+            });
+
+            window.addEventListener("resize", () => {
+                if (window.innerWidth >= 768) {
+                    close();
+                }
+            });
+        })();
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

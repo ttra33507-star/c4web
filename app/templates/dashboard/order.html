@@ -1,0 +1,54 @@
+{% extends "dashboard/layout.html" %}
+
+{% set title = "Orders" %}
+
+{% block dashboard_content %}
+<div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-8 shadow-lg backdrop-blur">
+    <header class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <h1 class="text-2xl font-semibold text-white">Order History</h1>
+            <p class="text-sm text-slate-400">All placement activity routed through the storefront.</p>
+        </div>
+        <a href="{{ url_for('main.services_page') }}" class="btn-primary">Create new order</a>
+    </header>
+
+    <div class="mt-6 overflow-hidden rounded-2xl border border-slate-800">
+        <table class="min-w-full divide-y divide-slate-800 text-sm text-slate-300">
+            <thead class="bg-slate-900/70 text-xs uppercase tracking-wide text-slate-400">
+                <tr>
+                    <th class="px-4 py-3 text-left">Order #</th>
+                    <th class="px-4 py-3 text-left">Service</th>
+                    <th class="px-4 py-3 text-left">Price</th>
+                    <th class="px-4 py-3 text-left">Customer</th>
+                    <th class="px-4 py-3 text-left">Date</th>
+                    <th class="px-4 py-3 text-left">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 bg-slate-950/40">
+                {% if orders %}
+                    {% for order in orders %}
+                        <tr class="hover:bg-slate-900/60">
+                            <td class="px-4 py-4 font-mono text-xs text-slate-400">{{ order.id }}</td>
+                            <td class="px-4 py-4">{{ order.service }}</td>
+                            <td class="px-4 py-4 text-emerald-300">{{ order.price }}</td>
+                            <td class="px-4 py-4">{{ order.customer }}</td>
+                            <td class="px-4 py-4">{{ order.created_at }}</td>
+                            <td class="px-4 py-4">
+                                <span class="inline-flex rounded-full bg-slate-800/80 px-3 py-1 text-xs font-medium text-slate-200">
+                                    {{ order.status | capitalize }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="px-4 py-8 text-center text-slate-500">
+                            No order history yet — complete a purchase to see it here.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

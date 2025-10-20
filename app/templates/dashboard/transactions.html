@@ -1,0 +1,64 @@
+{% extends "dashboard/layout.html" %}
+
+{% set title = "Transactions" %}
+
+{% block dashboard_content %}
+<div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-8 shadow-lg backdrop-blur">
+    <header class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <h1 class="text-2xl font-semibold text-white">Payment Ledger</h1>
+            <p class="text-sm text-slate-400">
+                Consolidated record of ABA PayWay callbacks captured by the platform.
+            </p>
+        </div>
+        <div class="text-right">
+            <p class="text-xs uppercase tracking-wide text-slate-500">Total Volume</p>
+            <p class="text-2xl font-semibold text-emerald-300">${{ "%.2f"|format(history.total_amount) }}</p>
+        </div>
+    </header>
+
+    <div class="mt-6 overflow-hidden rounded-2xl border border-slate-800">
+        <table class="min-w-full divide-y divide-slate-800 text-sm text-slate-300">
+            <thead class="bg-slate-900/70 text-xs uppercase tracking-wide text-slate-400">
+                <tr>
+                    <th class="px-4 py-3 text-left">Tran ID</th>
+                    <th class="px-4 py-3 text-left">Amount</th>
+                    <th class="px-4 py-3 text-left">Currency</th>
+                    <th class="px-4 py-3 text-left">Status</th>
+                    <th class="px-4 py-3 text-left">Timestamp</th>
+                    <th class="px-4 py-3 text-left">Raw Payload</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 bg-slate-950/40">
+                {% if history.transactions %}
+                    {% for txn in history.transactions %}
+                        <tr class="hover:bg-slate-900/60">
+                            <td class="px-4 py-4 font-mono text-xs text-slate-400">{{ txn.tran_id | default("Unknown") }}</td>
+                            <td class="px-4 py-4 text-emerald-300">{{ txn.amount | default("0.00") }}</td>
+                            <td class="px-4 py-4">{{ txn.currency | default("USD") }}</td>
+                            <td class="px-4 py-4">
+                                <span class="inline-flex rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-medium text-emerald-300">
+                                    {{ txn.status | default("pending") | capitalize }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-4">{{ txn.timestamp | default("—") }}</td>
+                            <td class="px-4 py-4">
+                                <details class="group">
+                                    <summary class="cursor-pointer text-xs text-emerald-200">View JSON</summary>
+                                    <pre class="mt-2 max-h-48 overflow-auto rounded-lg bg-slate-950/80 p-3 text-[11px] leading-relaxed text-slate-400">{{ txn | tojson(indent=2) }}</pre>
+                                </details>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="px-4 py-8 text-center text-slate-500">
+                            No transaction callbacks recorded. Complete a PayWay payment to populate this table.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

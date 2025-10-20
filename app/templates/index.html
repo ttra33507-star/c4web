@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Home · FARMREEL{% endblock %}
+
+{% block content %}
+<section class="relative isolate overflow-hidden">
+    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-950"></div>
+    <div class="absolute inset-0 -z-10 opacity-40 [background-image:radial-gradient(120%_120%_at_50%_20%,rgba(56,189,248,0.35)_0,rgba(15,23,42,0)_65%)]"></div>
+    <div class="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 py-20 sm:px-6 lg:flex-row lg:items-center lg:px-8">
+        <div class="max-w-2xl">
+            <span class="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-500/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.25em] text-emerald-200">
+                Work smarter
+            </span>
+            <h1 class="mt-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl font-display">
+                Premium workspace gear, made effortless with ABA PayWay checkout.
+            </h1>
+            <p class="mt-6 text-lg leading-relaxed text-slate-300">
+                FARMREEL curates ergonomic hardware and productivity bundles for modern teams. Securely process payments through ABA PayWay, and turn every workstation into mission control.
+            </p>
+            <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+                <a href="{{ url_for('main.services_page') }}" class="btn-primary">
+                    Browse services
+                </a>
+                <a href="{{ url_for('main.contact') }}" class="inline-flex items-center text-sm font-semibold text-emerald-300 hover:text-emerald-200">
+                    Talk to sales
+                    <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h9.586l-3.293-3.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 11-1.414-1.414L13.586 11H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="grid w-full max-w-xl gap-5 lg:max-w-none">
+            <div class="card border-emerald-500/20 bg-gradient-to-br from-slate-900/70 to-slate-950/90 shadow-glow">
+                <h3 class="text-lg font-semibold text-white">Live inventory insights</h3>
+                <p class="mt-2 text-sm text-slate-400">
+                    Keep track of active licenses and open orders from the integrated dashboard.
+                </p>
+            </div>
+            <div class="card border-sky-500/20">
+                <h3 class="text-lg font-semibold text-white">ABA PayWay ready</h3>
+                <p class="mt-2 text-sm text-slate-400">
+                    Generate signed PayWay requests server-side and send customers through a trusted checkout experience.
+                </p>
+            </div>
+            <div class="card border-fuchsia-500/20">
+                <h3 class="text-lg font-semibold text-white">Tailwind powered UI</h3>
+                <p class="mt-2 text-sm text-slate-400">
+                    Built with Tailwind CSS and composable templates for rapid iteration.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="border-t border-slate-900/80 bg-slate-950/40">
+    <div class="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-end justify-between gap-6">
+            <div>
+                <h2 class="text-3xl font-semibold text-white font-display">Bestsellers</h2>
+                <p class="mt-2 text-sm text-slate-400">Curated equipment that teams keep coming back for.</p>
+            </div>
+            <a href="{{ url_for('main.services_page') }}" class="inline-flex items-center text-sm font-semibold text-emerald-300 hover:text-emerald-200">
+                View the catalog
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h9.586l-3.293-3.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 11-1.414-1.414L13.586 11H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                </svg>
+            </a>
+        </div>
+        <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {% for service in services[:6] %}
+                <article class="group relative overflow-hidden rounded-2xl border border-slate-900/80 bg-slate-900/50 shadow-lg transition hover:border-emerald-400/40 hover:shadow-glow">
+                    <img src="{{ url_for('static', filename='images/' ~ service.image) }}"
+                         alt="{{ service.name }}"
+                         class="h-48 w-full object-cover transition duration-500 group-hover:scale-105">
+                    <div class="space-y-4 p-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-white">{{ service.name }}</h3>
+                            <p class="mt-2 text-sm text-slate-400">
+                                {{ service.desc | default("A premium workspace essential for your team.") }}
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-semibold text-emerald-300">${{ "%.2f"|format(service.price) }}</p>
+                            <a href="{{ url_for('main.order_service', service_id=loop.index0) }}"
+                               class="inline-flex items-center gap-1 text-sm font-semibold text-emerald-300 hover:text-emerald-200">
+                                Order now
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h9.586l-3.293-3.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 11-1.414-1.414L13.586 11H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

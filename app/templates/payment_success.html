@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Confirmed · FARMREEL{% endblock %}
+
+{% block content %}
+<section class="relative isolate overflow-hidden">
+    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-emerald-500/20 via-transparent to-transparent"></div>
+    <div class="mx-auto flex w-full max-w-4xl flex-col items-center gap-8 px-4 py-20 text-center sm:px-6 lg:px-8">
+        <div class="inline-flex items-center gap-3 rounded-full border border-emerald-400/40 bg-emerald-500/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-emerald-100">
+            Payment received
+        </div>
+        <div class="space-y-4">
+            <h1 class="text-4xl font-semibold text-white font-display">Thanks for the purchase!</h1>
+            <p class="text-base leading-relaxed text-slate-300">
+                Your ABA PayWay payment was successful. We’ll email your receipt and next steps within a few minutes.
+            </p>
+        </div>
+        <div class="rounded-3xl border border-slate-900/80 bg-slate-900/60 p-6 shadow-xl">
+            <p class="text-sm text-slate-400">Need a copy of the invoice?</p>
+            <p class="mt-2 text-lg font-semibold text-emerald-300">support@farmreel.com</p>
+        </div>
+        <a href="{{ url_for('main.dashboard') }}" class="btn-primary">Return to dashboard</a>
+    </div>
+</section>
+{% endblock %}
