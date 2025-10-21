@@ -9,10 +9,18 @@ Backend Flask app with SQLite (default) or MySQL persistence and ABA PayWay inte
 
 ## Environment
 The app now stores data in a local SQLite file (`c4web.sqlite`) by default.  
-Set the connection string for SQLAlchemy if you prefer using MySQL or custom credentials:
+To switch to MySQL you can either provide a complete SQLAlchemy connection string via `DATABASE_URL` or set the individual `MYSQL_*` variables:
 
 ```
 set DATABASE_URL=mysql+pymysql://<user>:<password>@localhost/c4web
+# or
+set MYSQL_HOST=localhost
+set MYSQL_DATABASE=c4web
+set MYSQL_USER=root
+set MYSQL_PASSWORD=secret   # optional
+set MYSQL_PORT=3306         # optional, defaults to 3306
+set MYSQL_CHARSET=utf8mb4   # optional, defaults to utf8mb4
+
 # optional: expose Telegram chat support
 set TELEGRAM_SUPPORT_URL=https://t.me/<your_support_bot_or_username>
 ```
@@ -21,7 +29,7 @@ On Windows PowerShell replace `set` with `$env:DATABASE_URL = "..."`.
 
 ## First-Time Setup
 1. Install Python dependencies: `pip install -r requirements.txt`
-2. (MySQL only) Ensure the server is running and the `c4web` database exists (create via phpMyAdmin if needed).
+2. (MySQL only) Ensure the server is running and the `c4web` database exists (create via phpMyAdmin if needed). Configure either `DATABASE_URL` or the `MYSQL_*` variables before continuing.
 3. Initialize tables and seed default services:
    - `python init_db.py`
 4. Start the development server: `python run.py`
