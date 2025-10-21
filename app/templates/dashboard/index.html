@@ -7,9 +7,9 @@
     <header class="rounded-2xl border border-slate-800 bg-slate-900/60 p-8 shadow-lg backdrop-blur">
         <h1 class="text-2xl font-semibold text-white">Operations Snapshot</h1>
         <p class="mt-2 text-sm text-slate-400">
-            Review the latest status across your licenses, orders, and payment activity.
+            Review the latest status across your licenses, orders, customers, and payment activity.
         </p>
-        <dl class="mt-8 grid gap-4 sm:grid-cols-3">
+        <dl class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-5 text-slate-300">
                 <dt class="text-sm text-slate-400">Active Licenses</dt>
                 <dd class="mt-2 text-3xl font-semibold text-white">{{ licenses|length }}</dd>
@@ -19,8 +19,22 @@
                 <dd class="mt-2 text-3xl font-semibold text-white">{{ orders|length }}</dd>
             </div>
             <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-5 text-slate-300">
-                <dt class="text-sm text-slate-400">Payments</dt>
+                <dt class="text-sm text-slate-400">Transactions</dt>
                 <dd class="mt-2 text-3xl font-semibold text-white">{{ history.count }}</dd>
+            </div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-5 text-slate-300">
+                <dt class="text-sm text-slate-400">Payments</dt>
+                <dd class="mt-2 text-3xl font-semibold text-white">{{ payments.count }}</dd>
+            </div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-5 text-slate-300">
+                <dt class="text-sm text-slate-400">Customers</dt>
+                <dd class="mt-2 text-3xl font-semibold text-white">{{ users|length }}</dd>
+            </div>
+            <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-5 text-slate-300">
+                <dt class="text-sm text-slate-400">Open Reports</dt>
+                <dd class="mt-2 text-3xl font-semibold text-white">
+                    {{ reports | selectattr('status', 'equalto', 'open') | list | length }}
+                </dd>
             </div>
         </dl>
     </header>
@@ -71,7 +85,50 @@
                     </span>
                 </a>
             </div>
+            </div>
         </div>
     </div>
-</div>
+
+    <div class="grid gap-6 lg:grid-cols-2">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-lg backdrop-blur">
+            <h2 class="text-lg font-semibold text-white">Latest Payments</h2>
+            <p class="mt-2 text-sm text-slate-400">Track captured and pending payments tied to orders.</p>
+            <ul class="mt-4 divide-y divide-slate-800/80 text-sm">
+                {% if payments.payments %}
+                    {% for payment in payments.payments[:5] %}
+                        <li class="flex items-center justify-between py-3">
+                            <div>
+                                <p class="font-medium text-white">Order {{ payment.orderId }}</p>
+                                <p class="text-xs text-slate-400">{{ "%.2f"|format(payment.amount) }} {{ payment.currency }}</p>
+                            </div>
+                            <span class="inline-flex items-center rounded-full bg-slate-800/80 px-3 py-1 text-xs text-emerald-300">
+                                {{ payment.status | capitalize }}
+                            </span>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="py-6 text-center text-slate-500">No payments captured yet.</li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-lg backdrop-blur">
+            <h2 class="text-lg font-semibold text-white">Recent Reports</h2>
+            <p class="mt-2 text-sm text-slate-400">Monitor customer feedback and compliance notes.</p>
+            <ul class="mt-4 divide-y divide-slate-800/80 text-sm">
+                {% if reports %}
+                    {% for report in reports[:5] %}
+                        <li class="py-3">
+                            <p class="font-medium text-white">{{ report.title }}</p>
+                            <p class="text-xs text-slate-400 mt-1">
+                                {{ report.category | default("General") }} &middot;
+                                {{ report.status | capitalize }}
+                            </p>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="py-6 text-center text-slate-500">No reports submitted.</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
 {% endblock %}

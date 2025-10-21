@@ -1,0 +1,54 @@
+{% extends "dashboard/layout.html" %}
+
+{% set title = "Reports" %}
+
+{% block dashboard_content %}
+<div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-8 shadow-lg backdrop-blur">
+    <header class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <h1 class="text-2xl font-semibold text-white">Reports &amp; Issues</h1>
+            <p class="text-sm text-slate-400">Track support tickets, fraud alerts, and audit notes.</p>
+        </div>
+    </header>
+
+    <div class="mt-6 overflow-hidden rounded-2xl border border-slate-800">
+        <table class="min-w-full divide-y divide-slate-800 text-sm text-slate-300">
+            <thead class="bg-slate-900/70 text-xs uppercase tracking-wide text-slate-400">
+                <tr>
+                    <th class="px-4 py-3 text-left">Title</th>
+                    <th class="px-4 py-3 text-left">Category</th>
+                    <th class="px-4 py-3 text-left">Status</th>
+                    <th class="px-4 py-3 text-left">Opened</th>
+                    <th class="px-4 py-3 text-left">Resolved</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 bg-slate-950/40">
+                {% if reports %}
+                    {% for report in reports %}
+                        <tr class="hover:bg-slate-900/60">
+                            <td class="px-4 py-4 text-white">
+                                <div class="font-medium">{{ report.title }}</div>
+                                <p class="mt-1 text-xs text-slate-400">{{ report.summary | default('No summary provided.') }}</p>
+                            </td>
+                            <td class="px-4 py-4">{{ report.category | default("General", true) }}</td>
+                            <td class="px-4 py-4">
+                                <span class="inline-flex rounded-full bg-slate-800/80 px-3 py-1 text-xs font-medium text-slate-200">
+                                    {{ report.status | capitalize }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-4 text-slate-400">{{ report.createdAt | default("N/A") }}</td>
+                            <td class="px-4 py-4 text-slate-400">{{ report.resolvedAt | default("—", true) }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="px-4 py-8 text-center text-slate-500">
+                            No reports on file. Submit a report through the API to populate this view.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

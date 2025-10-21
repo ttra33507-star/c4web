@@ -1,0 +1,58 @@
+{% extends "dashboard/layout.html" %}
+
+{% set title = "Payments" %}
+
+{% block dashboard_content %}
+<div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-8 shadow-lg backdrop-blur">
+    <header class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <h1 class="text-2xl font-semibold text-white">Payment Ledger</h1>
+            <p class="text-sm text-slate-400">All payment attempts recorded for orders.</p>
+        </div>
+        <div class="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-xs uppercase tracking-[0.35em] text-emerald-200">
+            <span>Total {{ summary.count }} &middot; {{ "%.2f"|format(summary.total_amount) }} {{ payments[0].currency if payments else "USD" }}</span>
+        </div>
+    </header>
+
+    <div class="mt-6 overflow-hidden rounded-2xl border border-slate-800">
+        <table class="min-w-full divide-y divide-slate-800 text-sm text-slate-300">
+            <thead class="bg-slate-900/70 text-xs uppercase tracking-wide text-slate-400">
+                <tr>
+                    <th class="px-4 py-3 text-left">Payment #</th>
+                    <th class="px-4 py-3 text-left">Order</th>
+                    <th class="px-4 py-3 text-left">Amount</th>
+                    <th class="px-4 py-3 text-left">Status</th>
+                    <th class="px-4 py-3 text-left">Method</th>
+                    <th class="px-4 py-3 text-left">Gateway Ref</th>
+                    <th class="px-4 py-3 text-left">Processed</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 bg-slate-950/40">
+                {% if payments %}
+                    {% for payment in payments %}
+                        <tr class="hover:bg-slate-900/60">
+                            <td class="px-4 py-4 font-mono text-xs text-slate-400">#{{ payment.id }}</td>
+                            <td class="px-4 py-4">{{ payment.orderId }}</td>
+                            <td class="px-4 py-4 text-emerald-300">{{ "%.2f"|format(payment.amount) }} {{ payment.currency }}</td>
+                            <td class="px-4 py-4">
+                                <span class="inline-flex rounded-full bg-slate-800/80 px-3 py-1 text-xs font-medium text-slate-200">
+                                    {{ payment.status | capitalize }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-4">{{ payment.method | default("ABA PayWay", true) }}</td>
+                            <td class="px-4 py-4 text-slate-400">{{ payment.gatewayReference | default("—", true) }}</td>
+                            <td class="px-4 py-4 text-slate-400">{{ payment.processedAt | default("N/A") }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="px-4 py-8 text-center text-slate-500">
+                            No payments have been recorded yet.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -3,11 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}FARMREEL{% endblock %}</title>
+    <title>{% block title %}C4{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
      <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @font-face {
+            font-family: "Pavia";
+            src: url("{{ url_for('static', filename='fonts/Pavia.ttf') }}") format("truetype");
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        body {
+            font-family: "Pavia", "Inter", sans-serif;
+        }
+
+        .font-display,
+        .font-body,
+        body * {
+            font-family: inherit;
+        }
+
+        .btn-order-glow {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.4rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: #34f5c5;
+            border-radius: 9999px;
+            border: 1px solid rgba(52, 245, 197, 0.35);
+            background: radial-gradient(circle at top left, rgba(52, 245, 197, 0.25), rgba(15, 23, 42, 0.2)),
+                        rgba(15, 23, 42, 0.85);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            box-shadow: 0 0 18px rgba(52, 245, 197, 0.12);
+        }
+
+        .btn-order-glow::after {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            background: linear-gradient(120deg, rgba(52, 245, 197, 0.65), rgba(94, 234, 212, 0.25), rgba(52, 245, 197, 0.65));
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            z-index: -1;
+        }
+
+        .btn-order-glow:hover,
+        .btn-order-glow:focus-visible {
+            color: #0f172a;
+            background: rgba(190, 242, 234, 0.9);
+            border-color: rgba(52, 245, 197, 0.65);
+            box-shadow: 0 0 25px rgba(45, 212, 191, 0.35), 0 5px 22px rgba(52, 245, 197, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .btn-order-glow:hover::after,
+        .btn-order-glow:focus-visible::after {
+            opacity: 1;
+        }
+
+        .btn-order-glow svg {
+            width: 0.85rem;
+            height: 0.85rem;
+        }
+
+        dialog[data-mobile-nav-dialog] {
+            inset: 50% auto auto 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+            width: calc(100% - 2rem);
+            max-width: 24rem;
+            border-radius: 1.5rem;
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            background-color: rgba(15, 23, 42, 0.95);
+            padding: 1.5rem;
+            color: #cbd5f5;
+        }
+
+        dialog[data-mobile-nav-dialog]::backdrop {
+            background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(4px);
+        }
+
+        .chat-support-icon {
+            width: 1.1rem;
+            height: 1.1rem;
+        }
+    </style>
     {% block head %}{% endblock %}
 </head>
 <body class="bg-slate-950 text-slate-100 font-body">
@@ -15,9 +107,9 @@
         <header class="border-b border-slate-900/80 bg-slate-950/70 backdrop-blur">
             <nav class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
                 <a href="{{ url_for('main.home') }}" class="flex items-center gap-3">
-                    <img src="{{ url_for('static', filename='images/logo C4 HUB.png') }}" alt="Farmreel logo" class="h-10 w-10 rounded-lg border border-slate-800 bg-slate-900/60 object-cover shadow">
+                    <img src="{{ url_for('static', filename='images/logo C4 HUB.png') }}" alt="C4 logo" class="h-10 w-10 rounded-lg border border-slate-800 bg-slate-900/60 object-cover shadow">
                     <div class="flex flex-col">
-                        <span class="font-display text-xl font-semibold text-white">FARMREEL</span>
+                        <span class="font-display text-xl font-semibold text-white">C4</span>
                         <span class="text-xs uppercase tracking-[0.28em] text-emerald-300">Digital Commerce</span>
                     </div>
                 </a>
@@ -34,18 +126,23 @@
                     </svg>
                 </button>
             </nav>
-            <div class="md:hidden" data-mobile-nav hidden>
-                <div class="fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm transition-opacity" data-mobile-nav-overlay></div>
-                <div class="fixed inset-x-4 top-20 z-50 origin-top rounded-3xl border border-slate-800 bg-slate-900/95 p-6 shadow-2xl transition-transform">
-                    <nav class="space-y-4 text-sm font-medium text-slate-300">
-                        <a href="{{ url_for('main.home') }}" class="block rounded-xl px-4 py-3 {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.home' else 'hover:bg-slate-800/60 hover:text-white' }}">Home</a>
-                        <a href="{{ url_for('main.services_page') }}" class="block rounded-xl px-4 py-3 {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.services_page' else 'hover:bg-slate-800/60 hover:text-white' }}">Services</a>
-                        <a href="{{ url_for('main.contact') }}" class="block rounded-xl px-4 py-3 {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.contact' else 'hover:bg-slate-800/60 hover:text-white' }}">Contact</a>
-                        <a href="{{ url_for('main.dashboard') }}" class="block rounded-xl px-4 py-3 {{ 'bg-slate-800/80 text-white' if request.endpoint and request.endpoint.startswith('main.') and 'dashboard' in request.endpoint else 'hover:bg-slate-800/60 hover:text-white' }}">Dashboard</a>
-                    </nav>
-                    <a href="{{ url_for('main.services_page') }}" class="btn-primary mt-6 w-full justify-center">Start a project</a>
+            <dialog class="md:hidden" data-mobile-nav-dialog aria-label="Mobile navigation">
+                <div class="flex items-center justify-between gap-4 pb-4">
+                    <p class="text-sm font-semibold uppercase tracking-[0.35em] text-emerald-300">Menu</p>
+                    <button type="button" class="rounded-full border border-slate-700 bg-slate-900/60 p-2 text-slate-300 hover:text-white" data-mobile-nav-close aria-label="Close menu">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
                 </div>
-            </div>
+                <nav class="space-y-3 text-sm font-medium text-slate-300">
+                    <a href="{{ url_for('main.home') }}" class="block rounded-xl px-4 py-3 {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.home' else 'hover:bg-slate-800/60 hover:text-white' }}">Home</a>
+                    <a href="{{ url_for('main.services_page') }}" class="block rounded-xl px-4 py-3 {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.services_page' else 'hover:bg-slate-800/60 hover:text-white' }}">Services</a>
+                    <a href="{{ url_for('main.contact') }}" class="block rounded-xl px-4 py-3 {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.contact' else 'hover:bg-slate-800/60 hover:text-white' }}">Contact</a>
+                    <a href="{{ url_for('main.dashboard') }}" class="block rounded-xl px-4 py-3 {{ 'bg-slate-800/80 text-white' if request.endpoint and request.endpoint.startswith('main.') and 'dashboard' in request.endpoint else 'hover:bg-slate-800/60 hover:text-white' }}">Dashboard</a>
+                </nav>
+                <a href="{{ url_for('main.services_page') }}" class="btn-primary mt-6 w-full justify-center">Start a project</a>
+            </dialog>
         </header>
 
         <main class="flex-1">
@@ -55,12 +152,12 @@
         <footer class="border-t border-slate-900/80 bg-slate-950/70">
             <div class="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-12 sm:px-6 lg:flex-row lg:items-start lg:justify-between lg:px-8">
                 <div class="max-w-md">
-                    <p class="font-display text-lg font-semibold text-white">FARMREEL</p>
+                    <p class="font-display text-lg font-semibold text-white">C4</p>
                     <p class="mt-3 text-sm text-slate-400">
                         Tailored workspace products paired with secure ABA PayWay checkout integration.
                     </p>
                     <div class="mt-6 flex items-center gap-3 text-xs uppercase tracking-[0.25em] text-slate-500">
-                        <span>&copy; {{ current_year }} Farmreel</span>
+                        <span>&copy; {{ current_year }} C4</span>
                         <span class="h-1 w-1 rounded-full bg-slate-700"></span>
                         <span>All rights reserved</span>
                     </div>
@@ -77,7 +174,7 @@
                     <div>
                         <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-400">Support</h3>
                         <ul class="mt-3 space-y-2 text-sm text-slate-300">
-                            <li><a href="mailto:support@farmreel.com" class="hover:text-white">support@farmreel.com</a></li>
+                            <li><a href="mailto:support@c4.com" class="hover:text-white">support@c4.com</a></li>
                             <li><a href="tel:+15551234567" class="hover:text-white">+1 (555) 123-4567</a></li>
                             <li><a href="{{ url_for('main.contact') }}" class="hover:text-white">Contact form</a></li>
                         </ul>
@@ -89,18 +186,21 @@
     <script>
         (function () {
             const toggle = document.querySelector("[data-mobile-nav-toggle]");
-            const drawer = document.querySelector("[data-mobile-nav]");
-            const overlay = document.querySelector("[data-mobile-nav-overlay]");
-            if (!toggle || !drawer || !overlay) return;
+            const dialog = document.querySelector("[data-mobile-nav-dialog]");
+            if (!toggle || !dialog) return;
 
             const close = () => {
-                drawer.setAttribute("hidden", "hidden");
+                if (dialog.open) {
+                    dialog.close();
+                }
                 toggle.setAttribute("aria-expanded", "false");
                 document.body.classList.remove("overflow-hidden");
             };
 
             const open = () => {
-                drawer.removeAttribute("hidden");
+                if (!dialog.open) {
+                    dialog.showModal();
+                }
                 toggle.setAttribute("aria-expanded", "true");
                 document.body.classList.add("overflow-hidden");
             };
@@ -114,10 +214,13 @@
                 }
             });
 
-            overlay.addEventListener("click", close);
+            dialog.addEventListener("cancel", (event) => {
+                event.preventDefault();
+                close();
+            });
 
-            drawer.querySelectorAll("a").forEach((link) => {
-                link.addEventListener("click", close);
+            dialog.querySelectorAll("a, [data-mobile-nav-close]").forEach((element) => {
+                element.addEventListener("click", close);
             });
 
             window.addEventListener("resize", () => {
@@ -127,6 +230,19 @@
             });
         })();
     </script>
+    {% if telegram_support_url %}
+    <a href="{{ telegram_support_url }}"
+       class="fixed bottom-6 right-6 inline-flex items-center gap-2 rounded-full bg-emerald-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+       target="_blank"
+       rel="noopener noreferrer"
+       aria-label="Chat support on Telegram">
+        <svg class="chat-support-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+            <path d="m8.5 12 2 2 5-5"/>
+        </svg>
+        Chat Support
+    </a>
+    {% endif %}
     {% block scripts %}{% endblock %}
 </body>
 </html>

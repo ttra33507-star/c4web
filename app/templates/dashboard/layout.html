@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ title | default("Dashboard") }} · FARMREEL{% endblock %}
+{% block title %}{{ title | default("Dashboard") }} · C4{% endblock %}
 
 {% block content %}
 <div class="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-10 px-4 py-12 lg:flex-row lg:px-8">
@@ -38,6 +38,27 @@
                         04
                     </span>
                     Transactions
+                </a>
+                <a href="{{ url_for('main.users') }}"
+                   class="group flex items-center gap-3 rounded-xl px-4 py-2.5 transition {{ 'bg-emerald-500/10 text-emerald-300 ring-1 ring-emerald-500/40' if active == 'users' else 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-800/80 text-xs font-semibold text-emerald-400">
+                        05
+                    </span>
+                    Users
+                </a>
+                <a href="{{ url_for('main.payments') }}"
+                   class="group flex items-center gap-3 rounded-xl px-4 py-2.5 transition {{ 'bg-emerald-500/10 text-emerald-300 ring-1 ring-emerald-500/40' if active == 'payments' else 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-800/80 text-xs font-semibold text-emerald-400">
+                        06
+                    </span>
+                    Payments
+                </a>
+                <a href="{{ url_for('main.reports') }}"
+                   class="group flex items-center gap-3 rounded-xl px-4 py-2.5 transition {{ 'bg-emerald-500/10 text-emerald-300 ring-1 ring-emerald-500/40' if active == 'reports' else 'text-slate-300 hover:bg-slate-800/60 hover:text-white' }}">
+                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-800/80 text-xs font-semibold text-emerald-400">
+                        07
+                    </span>
+                    Reports
                 </a>
             </nav>
         </div>

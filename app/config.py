@@ -1,6 +1,11 @@
 """Configuration objects for the Flask application."""
 
 import os
+from pathlib import Path
+
+
+_BASE_DIR = Path(__file__).resolve().parent.parent
+_DEFAULT_SQLITE_PATH = _BASE_DIR / "c4web.sqlite"
 
 
 class Config:
@@ -20,3 +25,14 @@ class Config:
     ABA_PAYWAY_CANCEL_URL = os.environ.get("ABA_PAYWAY_CANCEL_URL", "http://localhost:5000/services")
 
     ABA_PAYWAY_TIMEOUT = int(os.environ.get("ABA_PAYWAY_TIMEOUT", "30"))
+
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "DATABASE_URL",
+        f"sqlite:///{_DEFAULT_SQLITE_PATH.as_posix()}",
+    )
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    TELEGRAM_SUPPORT_URL = os.environ.get(
+        "TELEGRAM_SUPPORT_URL",
+        "https://t.me/C4SupportBot",
+    )

@@ -1,53 +1,142 @@
 {% extends "base.html" %}
 
-{% block title %}Home · FARMREEL{% endblock %}
+{% block title %}Home · C4{% endblock %}
 
 {% block content %}
-<section class="relative isolate overflow-hidden">
-    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-950"></div>
-    <div class="absolute inset-0 -z-10 opacity-40 [background-image:radial-gradient(120%_120%_at_50%_20%,rgba(56,189,248,0.35)_0,rgba(15,23,42,0)_65%)]"></div>
-    <div class="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 py-20 sm:px-6 lg:flex-row lg:items-center lg:px-8">
-        <div class="max-w-2xl">
-            <span class="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-500/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.25em] text-emerald-200">
-                Work smarter
+{% set plans = pricing_plans if pricing_plans is defined else [] %}
+{% set featured_services = catalog_services if catalog_services is defined else services %}
+
+<section class="border-y border-slate-900/80 bg-slate-950/60">
+    <div class="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-16 sm:px-6 lg:px-8">
+        <div class="max-w-3xl">
+            <span class="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-emerald-200">
+                Launch faster
             </span>
             <h1 class="mt-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl font-display">
-                Premium workspace gear, made effortless with ABA PayWay checkout.
+                Everything your brand needs to sell with confidence.
             </h1>
-            <p class="mt-6 text-lg leading-relaxed text-slate-300">
-                FARMREEL curates ergonomic hardware and productivity bundles for modern teams. Securely process payments through ABA PayWay, and turn every workstation into mission control.
+            <p class="mt-4 text-lg leading-relaxed text-slate-300">
+                Showcase products, automate fulfillment, and delight customers from a single dashboard. Explore how C4 streamlines every touchpoint of your payments journey.
             </p>
-            <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-                <a href="{{ url_for('main.services_page') }}" class="btn-primary">
-                    Browse services
-                </a>
-                <a href="{{ url_for('main.contact') }}" class="inline-flex items-center text-sm font-semibold text-emerald-300 hover:text-emerald-200">
-                    Talk to sales
-                    <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h9.586l-3.293-3.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 11-1.414-1.414L13.586 11H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
-                    </svg>
-                </a>
-            </div>
         </div>
-        <div class="grid w-full max-w-xl gap-5 lg:max-w-none">
-            <div class="card border-emerald-500/20 bg-gradient-to-br from-slate-900/70 to-slate-950/90 shadow-glow">
-                <h3 class="text-lg font-semibold text-white">Live inventory insights</h3>
-                <p class="mt-2 text-sm text-slate-400">
-                    Keep track of active licenses and open orders from the integrated dashboard.
-                </p>
+        <div data-carousel class="relative">
+            <div class="relative overflow-hidden rounded-3xl border border-slate-900/80 bg-slate-900/40 shadow-2xl shadow-emerald-500/10">
+                <article id="carousel-slide-1" data-carousel-slide class="grid min-h-[22rem] gap-8 bg-gradient-to-br from-emerald-500/15 via-slate-950/80 to-slate-950 px-8 py-10 transition duration-500 sm:grid-cols-[1.1fr_0.9fr] sm:px-12 sm:py-14">
+                    <div class="flex flex-col justify-between gap-6">
+                        <div class="space-y-5">
+                            <span class="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-slate-950/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.4em] text-emerald-200">
+                                Managed Checkout
+                            </span>
+                            <h2 class="text-3xl font-semibold text-white sm:text-4xl font-display">
+                                Smart payment flows built for busy teams.
+                            </h2>
+                            <p class="text-base text-slate-300 sm:text-lg">
+                                Guide every customer through a secure ABA PayWay experience with branded pages, risk monitoring, and instant invoicing.
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-4 text-sm text-slate-300">
+                            <span class="flex items-center gap-2 rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 font-medium text-emerald-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Go live in under 48 hours
+                            </span>
+                            <span class="rounded-xl border border-slate-800 bg-slate-950/70 px-3 py-2">
+                                No-code customization
+                            </span>
+                        </div>
+                    </div>
+                    <div class="relative flex items-center justify-center">
+                        <img src="{{ url_for('static', filename='images/C4 FB Station.png') }}"
+                             alt="Managed checkout dashboard preview"
+                             class="h-full max-h-[18rem] w-full max-w-[20rem] rounded-2xl border border-slate-800/80 bg-slate-950/70 object-cover shadow-lg shadow-emerald-500/10" />
+                    </div>
+                </article>
+                <article id="carousel-slide-2" data-carousel-slide class="hidden grid min-h-[22rem] gap-8 bg-gradient-to-br from-blue-500/15 via-slate-950/80 to-slate-950 px-8 py-10 transition duration-500 sm:grid-cols-[1.1fr_0.9fr] sm:px-12 sm:py-14">
+                    <div class="flex flex-col justify-between gap-6">
+                        <div class="space-y-5">
+                            <span class="inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-slate-950/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.4em] text-blue-200">
+                                Commerce Playbooks
+                            </span>
+                            <h2 class="text-3xl font-semibold text-white sm:text-4xl font-display">
+                                Prebuilt campaigns that convert on autopilot.
+                            </h2>
+                            <p class="text-base text-slate-300 sm:text-lg">
+                                Launch seasonal offers, retarget warm prospects, and run social commerce through automation built for Southeast Asia.
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-4 text-sm text-slate-300">
+                            <span class="flex items-center gap-2 rounded-xl border border-blue-400/30 bg-blue-500/10 px-3 py-2 font-medium text-blue-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M5 13l4 4L19 7" />
+                                </svg>
+                                Templates ready to deploy
+                            </span>
+                            <span class="rounded-xl border border-slate-800 bg-slate-950/70 px-3 py-2">
+                                CRM &amp; analytics included
+                            </span>
+                        </div>
+                    </div>
+                    <div class="relative flex items-center justify-center">
+                        <img src="{{ url_for('static', filename='images/C4 TG Station.png') }}"
+                             alt="Automated campaign preview"
+                             class="h-full max-h-[18rem] w-full max-w-[20rem] rounded-2xl border border-slate-800/80 bg-slate-950/70 object-cover shadow-lg shadow-blue-500/10" />
+                    </div>
+                </article>
+                <article id="carousel-slide-3" data-carousel-slide class="hidden grid min-h-[22rem] gap-8 bg-gradient-to-br from-purple-500/15 via-slate-950/80 to-slate-950 px-8 py-10 transition duration-500 sm:grid-cols-[1.1fr_0.9fr] sm:px-12 sm:py-14">
+                    <div class="flex flex-col justify-between gap-6">
+                        <div class="space-y-5">
+                            <span class="inline-flex items-center gap-2 rounded-full border border-purple-400/30 bg-slate-950/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.4em] text-purple-200">
+                                Real-time Insights
+                            </span>
+                            <h2 class="text-3xl font-semibold text-white sm:text-4xl font-display">
+                                Monitor every transaction with mission control.
+                            </h2>
+                            <p class="text-base text-slate-300 sm:text-lg">
+                                Keep finance and ops aligned with live dashboards, anomaly alerts, and drill-down reporting across all channels.
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-4 text-sm text-slate-300">
+                            <span class="flex items-center gap-2 rounded-xl border border-purple-400/30 bg-purple-500/10 px-3 py-2 font-medium text-purple-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M3 3v18h18" />
+                                </svg>
+                                Revenue pulse &amp; trendlines
+                            </span>
+                            <span class="rounded-xl border border-slate-800 bg-slate-950/70 px-3 py-2">
+                                Export-ready reports
+                            </span>
+                        </div>
+                    </div>
+                    <div class="relative flex items-center justify-center">
+                        <img src="{{ url_for('static', filename='images/C4 Report Facebook.png') }}"
+                             alt="Insights dashboard preview"
+                             class="h-full max-h-[18rem] w-full max-w-[20rem] rounded-2xl border border-slate-800/80 bg-slate-950/70 object-cover shadow-lg shadow-purple-500/10" />
+                    </div>
+                </article>
             </div>
-            <div class="card border-sky-500/20">
-                <h3 class="text-lg font-semibold text-white">ABA PayWay ready</h3>
-                <p class="mt-2 text-sm text-slate-400">
-                    Generate signed PayWay requests server-side and send customers through a trusted checkout experience.
-                </p>
-            </div>
-            <div class="card border-fuchsia-500/20">
-                <h3 class="text-lg font-semibold text-white">Tailwind powered UI</h3>
-                <p class="mt-2 text-sm text-slate-400">
-                    Built with Tailwind CSS and composable templates for rapid iteration.
-                </p>
-            </div>
+            <button type="button"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-slate-800/80 bg-slate-950/80 p-3 text-slate-300 transition hover:border-emerald-400/40 hover:text-white"
+                    data-carousel-prev
+                    aria-label="Previous slide">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+            </button>
+            <button type="button"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-slate-800/80 bg-slate-950/80 p-3 text-slate-300 transition hover:border-emerald-400/40 hover:text-white"
+                    data-carousel-next
+                    aria-label="Next slide">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M8.25 4.5L15.75 12l-7.5 7.5" />
+                </svg>
+            </button>
+            <div class="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-slate-950 via-slate-950/0 to-transparent"></div>
+        </div>
+        <div class="flex justify-center gap-3" role="tablist" aria-label="Carousel slides">
+            <button type="button" class="h-3 w-3 rounded-full border border-emerald-400/60 bg-emerald-400" data-carousel-dot="0" aria-label="Show slide 1" aria-controls="carousel-slide-1"></button>
+            <button type="button" class="h-3 w-3 rounded-full border border-slate-700 bg-slate-800/80 hover:border-emerald-300/60 hover:bg-slate-700" data-carousel-dot="1" aria-label="Show slide 2" aria-controls="carousel-slide-2"></button>
+            <button type="button" class="h-3 w-3 rounded-full border border-slate-700 bg-slate-800/80 hover:border-emerald-300/60 hover:bg-slate-700" data-carousel-dot="2" aria-label="Show slide 3" aria-controls="carousel-slide-3"></button>
         </div>
     </div>
 </section>
@@ -67,32 +156,151 @@
             </a>
         </div>
         <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {% for service in services[:6] %}
+            {% for service in featured_services[:6] %}
+                {% set detail_text = service.long_description or service.desc or "A premium workspace essential for your team." %}
                 <article class="group relative overflow-hidden rounded-2xl border border-slate-900/80 bg-slate-900/50 shadow-lg transition hover:border-emerald-400/40 hover:shadow-glow">
-                    <img src="{{ url_for('static', filename='images/' ~ service.image) }}"
-                         alt="{{ service.name }}"
-                         class="h-48 w-full object-cover transition duration-500 group-hover:scale-105">
-                    <div class="space-y-4 p-6">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="{{ url_for('static', filename='images/' ~ service.image) }}"
+                             alt="{{ service.name }}"
+                             class="h-full w-full object-cover transition duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-70 transition duration-300 group-hover:opacity-60"></div>
+                    </div>
+                    <div class="relative space-y-4 p-6 transition duration-300 group-hover:translate-y-4 group-hover:opacity-0">
                         <div>
                             <h3 class="text-lg font-semibold text-white">{{ service.name }}</h3>
                             <p class="mt-2 text-sm text-slate-400">
                                 {{ service.desc | default("A premium workspace essential for your team.") }}
                             </p>
                         </div>
-                        <div class="flex items-center justify-between">
-                            <p class="text-sm font-semibold text-emerald-300">${{ "%.2f"|format(service.price) }}</p>
-                            <a href="{{ url_for('main.order_service', service_id=loop.index0) }}"
-                               class="inline-flex items-center gap-1 text-sm font-semibold text-emerald-300 hover:text-emerald-200">
-                                Order now
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h9.586l-3.293-3.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 11-1.414-1.414L13.586 11H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
-                                </svg>
-                            </a>
+                    </div>
+                    <div class="pointer-events-none absolute inset-4 flex flex-col gap-4 rounded-2xl border border-emerald-400/20 bg-slate-950/95 px-6 py-8 text-center opacity-0 shadow-glow transition-all duration-300 ease-out backdrop-blur-md group-hover:pointer-events-auto group-hover:-translate-y-1 group-hover:opacity-100">
+                        <span class="self-center rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.4em] text-emerald-200">
+                            Quick view
+                        </span>
+                        <div class="space-y-2">
+                            <h3 class="text-xl font-semibold text-white">{{ service.name }}</h3>
+                            <p class="text-sm leading-relaxed text-slate-300">{{ detail_text }}</p>
                         </div>
+                        <a href="{{ url_for('main.order_service', service_id=service.id) }}"
+                           class="btn-order-glow">
+                            Order now
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+                            </svg>
+                        </a>
                     </div>
                 </article>
             {% endfor %}
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const carousels = document.querySelectorAll("[data-carousel]");
+
+        carousels.forEach((carousel) => {
+            const slides = Array.from(carousel.querySelectorAll("[data-carousel-slide]"));
+            if (!slides.length) {
+                return;
+            }
+
+            const sectionRoot = carousel.closest("section") || document;
+            const dots = Array.from(sectionRoot.querySelectorAll("[data-carousel-dot]"));
+            let active = slides.findIndex((slide) => !slide.classList.contains("hidden"));
+            if (active < 0) {
+                active = 0;
+            }
+
+            const setDotState = (dot, isActive) => {
+                if (!dot) {
+                    return;
+                }
+                if (isActive) {
+                    dot.classList.add("bg-emerald-400", "border-emerald-400/60");
+                    dot.classList.remove("bg-slate-800/80", "border-slate-700");
+                    dot.setAttribute("aria-selected", "true");
+                } else {
+                    dot.classList.remove("bg-emerald-400", "border-emerald-400/60");
+                    dot.classList.add("bg-slate-800/80", "border-slate-700");
+                    dot.setAttribute("aria-selected", "false");
+                }
+            };
+
+            slides.forEach((slide, index) => {
+                if (index === active) {
+                    slide.classList.remove("hidden");
+                    setDotState(dots[index], true);
+                } else {
+                    slide.classList.add("hidden");
+                    setDotState(dots[index], false);
+                }
+            });
+
+            const showSlide = (index) => {
+                if (index === active) {
+                    return;
+                }
+                const nextIndex = (index + slides.length) % slides.length;
+
+                slides[active].classList.add("hidden");
+                setDotState(dots[active], false);
+
+                slides[nextIndex].classList.remove("hidden");
+                setDotState(dots[nextIndex], true);
+
+                active = nextIndex;
+            };
+
+            const next = () => showSlide(active + 1);
+            const prev = () => showSlide(active - 1);
+
+            const nextButton = carousel.querySelector("[data-carousel-next]");
+            const prevButton = carousel.querySelector("[data-carousel-prev]");
+
+            const restartTimer = () => {
+                if (timer) {
+                    clearInterval(timer);
+                }
+                timer = setInterval(next, intervalMs);
+            };
+
+            const intervalMs = 4000;
+            let timer = null;
+            restartTimer();
+
+            nextButton?.addEventListener("click", () => {
+                next();
+                restartTimer();
+            });
+
+            prevButton?.addEventListener("click", () => {
+                prev();
+                restartTimer();
+            });
+
+            dots.forEach((dot, index) => {
+                dot.addEventListener("click", () => {
+                    showSlide(index);
+                    restartTimer();
+                });
+            });
+
+            const pauseTimer = () => {
+                if (timer) {
+                    clearInterval(timer);
+                    timer = null;
+                }
+            };
+
+            carousel.addEventListener("mouseenter", pauseTimer);
+            carousel.addEventListener("mouseleave", restartTimer);
+            carousel.addEventListener("touchstart", pauseTimer, { passive: true });
+            carousel.addEventListener("touchend", restartTimer);
+        });
+    });
+</script>
 {% endblock %}
