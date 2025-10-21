@@ -87,6 +87,26 @@ DEFAULT_SERVICES: list[dict[str, Any]] = [
     },
 ]
 
+_CANONICAL_IMAGE_LOOKUP = {
+    "c4_auto_delete_comment.png": "C4_Auto_Delete_Comment.png",
+    "c4_fb_station.png": "C4_FB_Station.png",
+    "c4_report_facebook.png": "C4_Report_Facebook.png",
+    "c4_tg_station.png": "C4_TG_Station.png",
+    "logo_c4_hub.png": "logo_C4_HUB.png",
+    "logo_c4_tech_hub.png": "logo_C4_TECH_HUB.png",
+    "txt.jpg": "txt.jpg",
+}
+
+
+def _normalize_static_image_name(name: str | None) -> str | None:
+    """Ensure static asset names match the deployed file set."""
+    if not name:
+        return None
+
+    sanitized = name.strip().replace(" ", "_")
+    canonical = _CANONICAL_IMAGE_LOOKUP.get(sanitized.lower())
+    return canonical or sanitized
+
 PRICING_PLAN_DEFINITIONS: list[dict[str, Any]] = [
     {
         "service_name": "1 Month Automation Plan",
@@ -143,11 +163,12 @@ def ensure_seed_data() -> None:
 
     for entry in DEFAULT_SERVICES:
         service = existing_services.get(entry["name"])
+        normalized_image = _normalize_static_image_name(entry.get("image"))
         if service is None:
             service = Service(
                 name=entry["name"],
                 price=entry["price"],
-                image=entry.get("image"),
+                image=normalized_image,
                 description=entry.get("desc"),
                 long_description=entry.get("long_description"),
             )
@@ -156,7 +177,7 @@ def ensure_seed_data() -> None:
         else:
             fields = {
                 "price": entry["price"],
-                "image": entry.get("image"),
+                "image": normalized_image,
                 "description": entry.get("desc"),
                 "long_description": entry.get("long_description"),
             }
@@ -165,20 +186,10 @@ def ensure_seed_data() -> None:
                     setattr(service, attr, value)
                     updated = True
 
-    legacy_image_map = {
-        "C4 Auto Delete Comment.png": "C4_Auto_Delete_Comment.png",
-        "C4 FB Station.png": "C4_FB_Station.png",
-        "C4 Report Facebook.png": "C4_Report_Facebook.png",
-        "C4 TG Station.png": "C4_TG_Station.png",
-        "logo C4 HUB.png": "logo_C4_HUB.png",
-        "logo C4 TECH HUB.png": "logo_C4_TECH_HUB.png",
-    }
-
-    for legacy_name, current_name in legacy_image_map.items():
-        affected = Service.query.filter_by(image=legacy_name).update(
-            {"image": current_name}, synchronize_session=False
-        )
-        if affected:
+    for service in Service.query.filter(Service.image.isnot(None)).all():
+        normalized_image = _normalize_static_image_name(service.image)
+        if normalized_image != service.image:
+            service.image = normalized_image
             updated = True
 
     if updated:
@@ -190,7 +201,7 @@ def _service_to_dict(service: Service) -> dict[str, Any]:
         "id": service.id,
         "name": service.name,
         "price": float(service.price),
-        "image": service.image,
+        "image": _normalize_static_image_name(service.image),
         "desc": service.description,
         "long_description": service.long_description,
     }
@@ -199,14 +210,35 @@ def _service_to_dict(service: Service) -> dict[str, Any]:
 def list_services() -> list[dict[str, Any]]:
     """Return all services stored in the database."""
     services = Service.query.order_by(Service.id.asc()).all()
-    return [_service_to_dict(service) for service in services]
+    if not services:
+        ensure_seed_data()
+        services = Service.query.order_by(Service.id.asc()).all()
+
+    if services:
+        return [_service_to_dict(service) for service in services]
+
+    # Fallback for environments where the database is unavailable.
+    return [
+        {
+            "id": index + 1,
+            "name": entry["name"],
+            "price": float(entry["price"]),
+            "image": _normalize_static_image_name(entry.get("image")),
+            "desc": entry.get("desc"),
+            "long_description": entry.get("long_description"),
+        }
+        for index, entry in enumerate(DEFAULT_SERVICES)
+    ]
 
 
 def list_pricing_plans() -> list[dict[str, Any]]:
     """Return pricing plan definitions with associated service metadata."""
-    services_by_name = {
-        service.name: service for service in Service.query.order_by(Service.id.asc()).all()
-    }
+    services = Service.query.order_by(Service.id.asc()).all()
+    if not services:
+        ensure_seed_data()
+        services = Service.query.order_by(Service.id.asc()).all()
+
+    services_by_name = {service.name: service for service in services}
 
     plans: list[dict[str, Any]] = []
     for definition in PRICING_PLAN_DEFINITIONS:
@@ -230,6 +262,9 @@ def list_pricing_plans() -> list[dict[str, Any]]:
 def get_service(service_id: int) -> dict[str, Any] | None:
     """Fetch a service record by its primary key."""
     service = Service.query.get(service_id)
+    if service is None:
+        ensure_seed_data()
+        service = Service.query.get(service_id)
     if service is None:
         return None
     return _service_to_dict(service)
@@ -280,6 +315,9 @@ def create_order_record(
 ) -> dict[str, Any]:
     """Persist an order in the database and return a serialized representation."""
     service = Service.query.get(service_id)
+    if service is None:
+        ensure_seed_data()
+        service = Service.query.get(service_id)
     if service is None:
         raise IndexError("Service not found.")
 

@@ -253,6 +253,7 @@
     const qrImage = qrModal ? qrModal.querySelector('[data-qr-image]') : null;
     const qrCloseButtons = qrModal ? qrModal.querySelectorAll('[data-qr-close]') : [];
     const qrProceedButton = qrModal ? qrModal.querySelector('[data-qr-proceed]') : null;
+    const qrProceedDefaultLabel = qrProceedButton ? qrProceedButton.textContent : '';
     const currentServiceId = {{ service_id | tojson }};
     const checkoutForm = document.getElementById('checkout-form');
 
@@ -260,6 +261,8 @@
     let activePlanServiceId = null;
     let activePlanTitle = null;
     let activePlanPrice = null;
+    let qrNextAction = 'form';
+    let qrNextHref = null;
 
     const formatPrice = value => {
         if (value === null || value === undefined || value === '') {
@@ -295,6 +298,13 @@
             const qrData = `${displayTitle} | ${displayPrice}`;
             qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(qrData)}`;
             qrImage.alt = `ABA PayWay QR code for ${displayTitle} ${displayPrice}`;
+        }
+        if (qrProceedButton) {
+            if (qrNextAction === 'navigate' && qrNextHref) {
+                qrProceedButton.textContent = 'Continue to this plan checkout';
+            } else {
+                qrProceedButton.textContent = qrProceedDefaultLabel || 'Continue to secure checkout';
+            }
         }
 
         if (typeof qrModal.showModal === 'function') {
@@ -347,21 +357,27 @@
             const isCurrentPlan = activePlanServiceId !== null
                 && currentServiceId !== null
                 && String(activePlanServiceId) === String(currentServiceId);
+            qrNextAction = 'form';
+            qrNextHref = null;
+            if (!isCurrentPlan && activePlanHref) {
+                qrNextAction = 'navigate';
+                qrNextHref = activePlanHref;
+            }
 
             if (isCurrentPlan) {
                 planModal.close();
-                if (qrModal) {
-                    openQrModal();
-                } else if (checkoutForm) {
-                    checkoutForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                if (planModal.hasAttribute('open')) {
+                    planModal.close();
                 }
-                return;
             }
 
-            if (activePlanHref) {
-                window.location.href = activePlanHref;
-            } else {
-                planModal.close();
+            if (qrModal) {
+                openQrModal();
+            } else if (qrNextAction === 'navigate' && qrNextHref) {
+                window.location.href = qrNextHref;
+            } else if (checkoutForm) {
+                checkoutForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
     }
@@ -387,9 +403,17 @@
         if (qrProceedButton && checkoutForm) {
             qrProceedButton.addEventListener('click', () => {
                 qrModal.close();
-                checkoutForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                if (checkoutForm.fullName) {
-                    checkoutForm.fullName.focus();
+                if (qrNextAction === 'navigate' && qrNextHref) {
+                    window.location.href = qrNextHref;
+                    return;
+                }
+                if (checkoutForm) {
+                    checkoutForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (checkoutForm.fullName) {
+                        checkoutForm.fullName.focus();
+                    }
+                } else if (qrNextHref) {
+                    window.location.href = qrNextHref;
                 }
             });
         }
