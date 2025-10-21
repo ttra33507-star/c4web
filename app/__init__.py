@@ -1,4 +1,5 @@
 from flask import Flask
+import click
 
 from .extensions import db
 
@@ -39,5 +40,13 @@ def create_app(config_override: dict | None = None) -> Flask:
 
         db.create_all()
         data.ensure_seed_data()
+
+    @app.cli.command("seed-data")
+    def seed_data_command() -> None:
+        """Insert the default catalog/services data into the configured database."""
+        with app.app_context():
+            db.create_all()
+            data.ensure_seed_data()
+        click.echo("Default data ensured.")
 
     return app
