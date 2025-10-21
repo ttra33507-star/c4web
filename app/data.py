@@ -165,6 +165,22 @@ def ensure_seed_data() -> None:
                     setattr(service, attr, value)
                     updated = True
 
+    legacy_image_map = {
+        "C4 Auto Delete Comment.png": "C4_Auto_Delete_Comment.png",
+        "C4 FB Station.png": "C4_FB_Station.png",
+        "C4 Report Facebook.png": "C4_Report_Facebook.png",
+        "C4 TG Station.png": "C4_TG_Station.png",
+        "logo C4 HUB.png": "logo_C4_HUB.png",
+        "logo C4 TECH HUB.png": "logo_C4_TECH_HUB.png",
+    }
+
+    for legacy_name, current_name in legacy_image_map.items():
+        affected = Service.query.filter_by(image=legacy_name).update(
+            {"image": current_name}, synchronize_session=False
+        )
+        if affected:
+            updated = True
+
     if updated:
         db.session.commit()
 
