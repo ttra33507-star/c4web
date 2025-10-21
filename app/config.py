@@ -5,7 +5,27 @@ from pathlib import Path
 
 
 _BASE_DIR = Path(__file__).resolve().parent.parent
-_DEFAULT_SQLITE_PATH = _BASE_DIR / "c4web.sqlite"
+
+
+def _default_sqlite_path() -> Path:
+    """
+    Determine where the SQLite file should live.
+
+    On Vercel the function bundle is read-only, so persist to /tmp instead.
+    Allow overriding with SQLITE_PATH when customising deployments.
+    """
+    if sqlite_path := os.environ.get("SQLITE_PATH"):
+        return Path(sqlite_path)
+
+    if os.environ.get("VERCEL"):
+        return Path("/tmp") / "c4web.sqlite"
+
+    return _BASE_DIR / "c4web.sqlite"
+
+
+def _sqlite_uri_from_path(path: Path) -> str:
+    """Convert an absolute filesystem path into a SQLAlchemy SQLite URI."""
+    return f"sqlite:///{path.expanduser().resolve().as_posix()}"
 
 
 class Config:
@@ -26,9 +46,17 @@ class Config:
 
     ABA_PAYWAY_TIMEOUT = int(os.environ.get("ABA_PAYWAY_TIMEOUT", "30"))
 
+    _SQLITE_PATH = _default_sqlite_path()
+    # Ensure the target directory exists before SQLAlchemy initialises.
+    try:
+        _SQLITE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        # Ignore failures so the application can surface a clearer DB error.
+        pass
+
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL",
-        f"sqlite:///{_DEFAULT_SQLITE_PATH.as_posix()}",
+        _sqlite_uri_from_path(_SQLITE_PATH),
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
