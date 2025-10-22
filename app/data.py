@@ -17,46 +17,28 @@ LICENSE_DATA: list[dict[str, Any]] = []
 
 DEFAULT_SERVICES: list[dict[str, Any]] = [
     {
-        "name": "1 Month Automation Plan",
+        "name": "Auto Delete Comment - 1 Month Plan",
         "price": Decimal("9.99"),
         "image": "C4-Auto-Delete-Comment.png",
         "desc": "Kick-off automation with full feature access for 30 days.",
         "long_description": "Entry plan for teams validating their workflow. Includes all standard modules and support.",
     },
     {
-        "name": "3 Month Automation Plan",
+        "name": "Facebook Station ",
         "price": Decimal("29.99"),
         "image": "C4-FB-Station.png",
         "desc": "Quarterly bundle with bonus days and premium feature unlocks.",
         "long_description": "Our most popular option—extend coverage, unlock additional rotations, and receive priority support.",
     },
     {
-        "name": "12 Month Automation Plan",
+        "name": "Report Facebook ",
         "price": Decimal("119.99"),
         "image": "C4-Report-Facebook.png",
         "desc": "Annual coverage with native verification and custom feature access.",
         "long_description": "Full-year automation license with concierge onboarding, compliance review, and tailored feature drops.",
     },
     {
-        "name": "Minimal Workspace",
-        "price": Decimal("49.99"),
-        "image": "C4-Auto-Delete-Comment.png",
-        "desc": "Compact essentials kit for focused solo creators.",
-    },
-    {
-        "name": "Ergonomic Chair",
-        "price": Decimal("199.99"),
-        "image": "C4-FB-Station.png",
-        "desc": "Lumbar support and adaptive seating for long sessions.",
-    },
-    {
-        "name": "Wireless Charger",
-        "price": Decimal("29.99"),
-        "image": "C4-Report-Facebook.png",
-        "desc": "Qi-certified fast charging pad built for shared desks.",
-    },
-    {
-        "name": "Noise-Canceling Headphones",
+        "name": "Telegram Station",
         "price": Decimal("89.99"),
         "image": "C4-TG-Station.png",
         "desc": "Immersive audio with hybrid ANC for open offices.",
@@ -66,25 +48,7 @@ DEFAULT_SERVICES: list[dict[str, Any]] = [
         "price": Decimal("59.99"),
         "image": "txt.jpg",
         "desc": "Wireless charging, pen storage, and cable routing combined.",
-    },
-    {
-        "name": "LED Monitor Light",
-        "price": Decimal("39.99"),
-        "image": "C4-Auto-Delete-Comment.png",
-        "desc": "Glare-free top lighting with dimming presets.",
-    },
-    {
-        "name": "Portable Laptop Stand",
-        "price": Decimal("24.99"),
-        "image": "C4-FB-Station.png",
-        "desc": "Foldable aluminium riser for ergonomic travel setups.",
-    },
-    {
-        "name": "Digital Drawing Tablet",
-        "price": Decimal("129.99"),
-        "image": "C4-Report-Facebook.png",
-        "desc": "Battery-free stylus with 8,192 levels of pressure sensitivity.",
-    },
+    }
 ]
 
 _CANONICAL_IMAGE_LOOKUP = {
