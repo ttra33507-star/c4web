@@ -84,7 +84,7 @@
                     <div class="flex flex-1 flex-col gap-4 p-6">
                         <div>
                             <h2 class="text-xl font-semibold text-white">{{ service.name }}</h2>
-                            <p class="mt-2 text-sm text-slate-400">
+                            <p class="mt-2 text-sm text-slate-400 hidden sm:block">
                                 {{ service.long_description | default(service.desc | default("Designed for comfort and efficiency in any modern office.")) }}
                             </p>
                         </div>
@@ -92,13 +92,14 @@
                             <div class="flex items-center justify-between text-sm">
                                 <span class="font-semibold text-emerald-300">${{ "%.2f"|format(service.price) }}</span>
                                 <button type="button"
-                                        class="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-200 hover:border-emerald-400/60 hover:text-emerald-100"
+                                        class="hidden sm:inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-200 hover:border-emerald-400/60 hover:text-emerald-100"
                                         data-modal-open="service-{{ service.id }}">
                                     Specs
                                 </button>
                             </div>
-                            <a href="{{ url_for('main.order_service', service_id=service.id) }}" class="btn-primary mt-4 w-full">
-                                Order via PayWay
+                            <a href="{{ url_for('main.order_service', service_id=service.id) }}" class="btn-primary mt-4 w-full sm:flex">
+                                <span class="hidden sm:inline">Order via PayWay</span>
+                                <span class="sm:hidden">Buy Now - ${{ "%.2f"|format(service.price) }}</span>
                             </a>
                         </div>
                     </div>

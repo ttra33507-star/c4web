@@ -99,8 +99,9 @@
             display: inline-flex; 
             align-items: center;
             justify-content: center;
+            width: 200px;
             gap: 0.3rem;
-            padding: 12px 10px; 
+            padding: 12px 12px; 
             border-radius: 9999px;
             font-size: 12px;
             font-weight: 600;
@@ -160,7 +161,7 @@
                     <a href="{{ url_for('main.contact') }}" class="rounded-full px-4 py-2 transition {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.contact' else 'hover:text-white hover:bg-slate-800/60' }}">Contact</a>
                     <a href="{{ url_for('main.dashboard') }}" class="rounded-full px-4 py-2 transition {{ 'bg-slate-800/80 text-white' if request.endpoint and request.endpoint.startswith('main.') and 'dashboard' in request.endpoint else 'hover:text-white hover:bg-slate-800/60' }}">Dashboard</a>
                 </div>
-                <a href="{{ url_for('main.services_page') }}" class="btn-primary  h-[40px] text-[9px] me-1 inline">Start a project</a>
+                <a href="{{ url_for('main.services_page') }}" class="btn-primary h-[40px]  md:hidden lg:block sm:text-[9px] me-1 sm:w-[250px]">Start a project</a>
                 <button type="button" class="inline-flex items-center rounded-xl border border-slate-700 bg-slate-900/80 p-2 text-slate-200 md:hidden" aria-label="Toggle menu" data-mobile-nav-toggle aria-expanded="false">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
@@ -182,7 +183,7 @@
                     <a href="{{ url_for('main.contact') }}" class="block rounded-xl px-4 py-3 {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.contact' else 'hover:bg-slate-800/60 hover:text-white' }}">Contact</a>
                     <a href="{{ url_for('main.dashboard') }}" class="block rounded-xl px-4 py-3 {{ 'bg-slate-800/80 text-white' if request.endpoint and request.endpoint.startswith('main.') and 'dashboard' in request.endpoint else 'hover:bg-slate-800/60 hover:text-white' }}">Dashboard</a>
                 </nav>
-                <a href="{{ url_for('main.services_page') }}" class="btn-primary mt-6 w-full justify-center">Start a project</a>
+                <a href="{{ url_for('main.services_page') }}" class="btn-primary mt-6 w-full justify-center md:hidden">Start a project</a>
             </dialog>
         </header>
 
