@@ -7,8 +7,43 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
-     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            50: "#e6f2f9",
+                            100: "#c7e1f3",
+                            200: "#98c6e7",
+                            300: "#6ba8d6",
+                            400: "#3f89c2",
+                            500: "#096b9f",
+                            600: "#075a84",
+                            700: "#05486a",
+                            800: "#033750",
+                            900: "#02263a",
+                            950: "#011928",
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
+        :root {
+            --brand-50: #e6f2f9;
+            --brand-100: #c7e1f3;
+            --brand-200: #98c6e7;
+            --brand-300: #6ba8d6;
+            --brand-400: #3f89c2;
+            --brand-500: #096b9f;
+            --brand-500-rgb: 9, 107, 159;
+            --brand-400-rgb: 63, 137, 194;
+            --brand-300-rgb: 107, 168, 214;
+        }
+
         @font-face {
             font-family: "Pavia";
             src: url("{{ url_for('static', filename='fonts/Pavia.ttf') }}") format("truetype");
@@ -38,13 +73,13 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.22em;
-            color: #34f5c5;
+            color: var(--brand-100);
             border-radius: 9999px;
-            border: 1px solid rgba(52, 245, 197, 0.35);
-            background: radial-gradient(circle at top left, rgba(52, 245, 197, 0.25), rgba(15, 23, 42, 0.2)),
+            border: 1px solid rgba(var(--brand-500-rgb), 0.35);
+            background: radial-gradient(circle at top left, rgba(var(--brand-300-rgb), 0.25), rgba(15, 23, 42, 0.2)),
                         rgba(15, 23, 42, 0.85);
             transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-            box-shadow: 0 0 18px rgba(52, 245, 197, 0.12);
+            box-shadow: 0 0 18px rgba(var(--brand-500-rgb), 0.14);
         }
 
         .btn-order-glow::after {
@@ -52,7 +87,12 @@
             position: absolute;
             inset: -1px;
             border-radius: inherit;
-            background: linear-gradient(120deg, rgba(52, 245, 197, 0.65), rgba(94, 234, 212, 0.25), rgba(52, 245, 197, 0.65));
+            background: linear-gradient(
+                120deg,
+                rgba(var(--brand-400-rgb), 0.65),
+                rgba(var(--brand-300-rgb), 0.25),
+                rgba(var(--brand-400-rgb), 0.65)
+            );
             opacity: 0;
             transition: opacity 0.25s ease;
             z-index: -1;
@@ -61,9 +101,9 @@
         .btn-order-glow:hover,
         .btn-order-glow:focus-visible {
             color: #0f172a;
-            background: rgba(190, 242, 234, 0.9);
-            border-color: rgba(52, 245, 197, 0.65);
-            box-shadow: 0 0 25px rgba(45, 212, 191, 0.35), 0 5px 22px rgba(52, 245, 197, 0.25);
+            background: rgba(206, 232, 246, 0.9);
+            border-color: rgba(var(--brand-400-rgb), 0.65);
+            box-shadow: 0 0 25px rgba(var(--brand-500-rgb), 0.3), 0 5px 22px rgba(var(--brand-400-rgb), 0.25);
             transform: translateY(-2px);
         }
 
@@ -75,6 +115,33 @@
         .btn-order-glow svg {
             width: 0.85rem;
             height: 0.85rem;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.24em;
+            color: rgba(255, 255, 255, 0.95);
+            background: linear-gradient(135deg, rgba(var(--brand-500-rgb), 0.95), rgba(var(--brand-400-rgb), 0.95));
+            border: 1px solid rgba(var(--brand-500-rgb), 0.45);
+            box-shadow: 0 12px 28px rgba(var(--brand-500-rgb), 0.25);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus-visible {
+            transform: translateY(-2px);
+            border-color: rgba(var(--brand-500-rgb), 0.65);
+            background: linear-gradient(135deg, rgba(var(--brand-400-rgb), 1), rgba(4, 64, 96, 0.95));
+            box-shadow: 0 16px 32px rgba(var(--brand-500-rgb), 0.35);
+            outline: none;
         }
 
         dialog[data-mobile-nav-dialog] {
@@ -106,12 +173,8 @@
     <div class="flex min-h-screen flex-col">
         <header class="border-b border-slate-900/80 bg-slate-950/70 backdrop-blur">
             <nav class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
-                <a href="{{ url_for('main.home') }}" class="flex items-center gap-3">
-                    <img src="{{ url_for('static', filename='images/logo_C4_HUB.png') }}" alt="C4 logo" class="h-10 w-10 rounded-lg border border-slate-800 bg-slate-900/60 object-cover shadow">
-                    <div class="flex flex-col">
-                        <span class="font-display text-xl font-semibold text-white">C4</span>
-                        <span class="text-xs uppercase tracking-[0.28em] text-emerald-300">Digital Commerce</span>
-                    </div>
+                <a href="{{ url_for('main.home') }}" class="flex items-center gap-3 ">
+                    <img src="{{ url_for('static', filename='images/logo_C4_HUB.png') }}" alt="C4 logo" class="h-[45px] w-[180px] p-[1px] rounded-[3px]     object-cover shadow">
                 </a>
                 <div class="hidden items-center gap-1 rounded-full border border-slate-800 bg-slate-900/70 p-1 text-sm font-medium text-slate-300 shadow-inner md:flex">
                     <a href="{{ url_for('main.home') }}" class="rounded-full px-4 py-2 transition {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.home' else 'hover:text-white hover:bg-slate-800/60' }}">Home</a>

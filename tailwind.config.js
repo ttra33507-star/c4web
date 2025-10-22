@@ -8,8 +8,21 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          DEFAULT: "#38bdf8",
-          contrast: "#0f172a",
+          DEFAULT: "#096b9f",
+          contrast: "#f8fbff",
+        },
+        emerald: {
+          50: "#e6f2f9",
+          100: "#c7e1f3",
+          200: "#98c6e7",
+          300: "#6ba8d6",
+          400: "#3f89c2",
+          500: "#096b9f",
+          600: "#075a84",
+          700: "#05486a",
+          800: "#033750",
+          900: "#02263a",
+          950: "#011928",
         },
       },
       fontFamily: {
