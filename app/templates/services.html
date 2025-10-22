@@ -11,18 +11,40 @@
     dialog[data-modal]::backdrop {
         background: rgba(2, 6, 23, 0.85);
     }
-    /* Touch support: mirror hover styles when a card has the .touch class */
-    .group.touch {
-        /* approximate Tailwind hover:border-emerald-400/40 */
-        border-color: rgba(52, 211, 153, 0.4) !important;
-        /* subtle glow like hover:shadow-glow */
-        box-shadow: 0 8px 24px rgba(34, 197, 94, 0.06), 0 2px 6px rgba(0,0,0,0.4);
+    
+    /* Mobile-first: Default touch styles for all devices */
+    @media (hover: none) {
+        .group {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .group.touch {
+            border-color: rgba(52, 211, 153, 0.4) !important;
+            box-shadow: 0 8px 24px rgba(34, 197, 94, 0.06), 0 2px 6px rgba(0,0,0,0.4);
+        }
+        
+        .group.touch img {
+            transform: scale(1.05);
+        }
     }
-    .group.touch img {
-        transform: scale(1.05);
-        transition: transform 0.5s ease;
+    
+    /* Hover styles only for devices that support hover */
+    @media (hover: hover) {
+        .group:hover {
+            border-color: rgba(52, 211, 153, 0.4);
+            box-shadow: 0 8px 24px rgba(34, 197, 94, 0.06), 0 2px 6px rgba(0,0,0,0.4);
+        }
+        
+        .group:hover img {
+            transform: scale(1.05);
+        }
     }
-    /* Make sure touch state transitions similarly to :hover */
+    
+    /* Shared transitions */
+    .group {
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
     .group img {
         transition: transform 0.5s ease;
     }
@@ -154,47 +176,78 @@
     });
 </script>
 <script>
-    // Touch-to-toggle-hover for mobile: when user taps a card (element with .group),
-    // add a .touch class so the CSS above applies the same styles as :hover.
+    // Enhanced touch-to-toggle-hover for mobile
     (function(){
-        if (!('ontouchstart' in window)) return; // only run on touch-capable devices
+        // Only run on touch devices or devices without hover capability
+        if (window.matchMedia('(hover: hover)').matches) return;
 
         const groups = Array.from(document.querySelectorAll('.group'));
+        let activeGroup = null;
+        let touchStartTime = 0;
+        const LONG_PRESS_DURATION = 500; // milliseconds
 
-        // helper to clear all touch states
         function clearTouches() {
             groups.forEach(g => g.classList.remove('touch'));
+            activeGroup = null;
         }
 
-        // when touching anywhere, set the touched group's .touch class
-        document.addEventListener('touchstart', function(e){
-            const g = e.target.closest && e.target.closest('.group');
-            if (g) {
-                // if this card already has touch, allow the next interaction (like link) to proceed
-                if (!g.classList.contains('touch')) {
-                    // clear others and set this one
-                    clearTouches();
-                    g.classList.add('touch');
-                    // prevent the first touch from immediately activating controls underneath
-                    // this gives the user a chance to see the hover state; a second tap will activate links/buttons
-                    e.preventDefault();
-                }
-            } else {
-                // touched outside any group -> clear states
+        // Handle touch start
+        document.addEventListener('touchstart', function(e) {
+            const group = e.target.closest('.group');
+            touchStartTime = Date.now();
+
+            if (!group) {
                 clearTouches();
+                return;
+            }
+
+            // If touching a new group, clear others
+            if (activeGroup && activeGroup !== group) {
+                clearTouches();
+            }
+
+            // If this is the first touch on this group
+            if (!group.classList.contains('touch')) {
+                e.preventDefault(); // Prevent first tap from triggering links
+                group.classList.add('touch');
+                activeGroup = group;
             }
         }, { passive: false });
 
-        // optional: clear touch states when scrolling starts
-        let touchMoved = false;
-        document.addEventListener('touchmove', function(){ touchMoved = true; }, { passive: true });
-        document.addEventListener('touchend', function(){
-            // if it was a move (scroll), don't keep hover state
-            if (touchMoved) {
-                touchMoved = false;
+        // Handle touch end
+        document.addEventListener('touchend', function(e) {
+            const group = e.target.closest('.group');
+            const touchDuration = Date.now() - touchStartTime;
+
+            // If it was a long press, always clear the touch state
+            if (touchDuration > LONG_PRESS_DURATION) {
+                clearTouches();
+                return;
+            }
+
+            // If we didn't touch a group or touched outside active group, clear all
+            if (!group || (activeGroup && group !== activeGroup)) {
                 clearTouches();
             }
         });
+
+        // Clear touch states on scroll
+        let scrollTimeout;
+        window.addEventListener('scroll', function() {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(clearTouches, 150);
+        }, { passive: true });
+
+        // Handle clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.group')) {
+                clearTouches();
+            }
+        });
+        
+        // Clear states when switching tabs/windows
+        document.addEventListener('visibilitychange', clearTouches);
+        window.addEventListener('blur', clearTouches);
     })();
 </script>
 {% endblock %}
