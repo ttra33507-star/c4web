@@ -11,6 +11,21 @@
     dialog[data-modal]::backdrop {
         background: rgba(2, 6, 23, 0.85);
     }
+    /* Touch support: mirror hover styles when a card has the .touch class */
+    .group.touch {
+        /* approximate Tailwind hover:border-emerald-400/40 */
+        border-color: rgba(52, 211, 153, 0.4) !important;
+        /* subtle glow like hover:shadow-glow */
+        box-shadow: 0 8px 24px rgba(34, 197, 94, 0.06), 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .group.touch img {
+        transform: scale(1.05);
+        transition: transform 0.5s ease;
+    }
+    /* Make sure touch state transitions similarly to :hover */
+    .group img {
+        transition: transform 0.5s ease;
+    }
 </style>
 {% endblock %}
 
@@ -137,5 +152,49 @@
             }
         });
     });
+</script>
+<script>
+    // Touch-to-toggle-hover for mobile: when user taps a card (element with .group),
+    // add a .touch class so the CSS above applies the same styles as :hover.
+    (function(){
+        if (!('ontouchstart' in window)) return; // only run on touch-capable devices
+
+        const groups = Array.from(document.querySelectorAll('.group'));
+
+        // helper to clear all touch states
+        function clearTouches() {
+            groups.forEach(g => g.classList.remove('touch'));
+        }
+
+        // when touching anywhere, set the touched group's .touch class
+        document.addEventListener('touchstart', function(e){
+            const g = e.target.closest && e.target.closest('.group');
+            if (g) {
+                // if this card already has touch, allow the next interaction (like link) to proceed
+                if (!g.classList.contains('touch')) {
+                    // clear others and set this one
+                    clearTouches();
+                    g.classList.add('touch');
+                    // prevent the first touch from immediately activating controls underneath
+                    // this gives the user a chance to see the hover state; a second tap will activate links/buttons
+                    e.preventDefault();
+                }
+            } else {
+                // touched outside any group -> clear states
+                clearTouches();
+            }
+        }, { passive: false });
+
+        // optional: clear touch states when scrolling starts
+        let touchMoved = false;
+        document.addEventListener('touchmove', function(){ touchMoved = true; }, { passive: true });
+        document.addEventListener('touchend', function(){
+            // if it was a move (scroll), don't keep hover state
+            if (touchMoved) {
+                touchMoved = false;
+                clearTouches();
+            }
+        });
+    })();
 </script>
 {% endblock %}
