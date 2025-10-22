@@ -174,7 +174,7 @@
         <header class="border-b border-slate-900/80 bg-slate-950/70 backdrop-blur">
             <nav class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
                 <a href="{{ url_for('main.home') }}" class="flex items-center gap-3 ">
-                    <img src="{{ url_for('static', filename='images/logo_C4_HUB.png') }}" alt="C4 logo" class="h-[45px] w-[180px] p-[1px] rounded-[3px]     object-cover shadow">
+                    <img src="{{ url_for('static', filename='images/logo-C4-HUB.png') }}" alt="C4 logo" class="h-[45px] w-[180px] p-[1px] rounded-[3px]     object-cover shadow">
                 </a>
                 <div class="hidden items-center gap-1 rounded-full border border-slate-800 bg-slate-900/70 p-1 text-sm font-medium text-slate-300 shadow-inner md:flex">
                     <a href="{{ url_for('main.home') }}" class="rounded-full px-4 py-2 transition {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.home' else 'hover:text-white hover:bg-slate-800/60' }}">Home</a>
