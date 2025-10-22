@@ -96,11 +96,11 @@
         }
 
         .btn-primary {
-            display: inline-flex;
+            display: inline-flex; 
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.75rem;
+            /* gap: 0.5rem;
+            padding: 0.75rem 1.75rem; */
             border-radius: 9999px;
             font-size: 0.875rem;
             font-weight: 600;
@@ -160,7 +160,7 @@
                     <a href="{{ url_for('main.contact') }}" class="rounded-full px-4 py-2 transition {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.contact' else 'hover:text-white hover:bg-slate-800/60' }}">Contact</a>
                     <a href="{{ url_for('main.dashboard') }}" class="rounded-full px-4 py-2 transition {{ 'bg-slate-800/80 text-white' if request.endpoint and request.endpoint.startswith('main.') and 'dashboard' in request.endpoint else 'hover:text-white hover:bg-slate-800/60' }}">Dashboard</a>
                 </div>
-                <a href="{{ url_for('main.services_page') }}" class="btn-primary hidden md:inline-flex">Start a project</a>
+                <a href="{{ url_for('main.services_page') }}" class="btn-primary  w-[200px] h-[25px]">Start a project</a>
                 <button type="button" class="inline-flex items-center rounded-xl border border-slate-700 bg-slate-900/80 p-2 text-slate-200 md:hidden" aria-label="Toggle menu" data-mobile-nav-toggle aria-expanded="false">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
