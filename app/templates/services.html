@@ -12,24 +12,29 @@
         background: rgba(2, 6, 23, 0.85);
     }
     
-    /* Mobile-first: Default touch styles for all devices */
-    @media (hover: none) {
-        .group {
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        .group.touch {
-            border-color: rgba(52, 211, 153, 0.4) !important;
-            box-shadow: 0 8px 24px rgba(34, 197, 94, 0.06), 0 2px 6px rgba(0,0,0,0.4);
-        }
-        
-        .group.touch img {
-            transform: scale(1.05);
-        }
+    /* Base styles for all devices */
+    .group {
+        -webkit-tap-highlight-color: transparent;
+        transition: all 0.3s ease;
+        cursor: pointer;
     }
     
-    /* Hover styles only for devices that support hover */
-    @media (hover: hover) {
+    .group img {
+        transition: transform 0.5s ease;
+    }
+
+    /* Touch styles (applied via JS) */
+    .group.touch {
+        border-color: rgba(52, 211, 153, 0.4) !important;
+        box-shadow: 0 8px 24px rgba(34, 197, 94, 0.06), 0 2px 6px rgba(0,0,0,0.4);
+    }
+    
+    .group.touch img {
+        transform: scale(1.05);
+    }
+
+    /* Desktop hover styles */
+    @media (hover: hover) and (pointer: fine) {
         .group:hover {
             border-color: rgba(52, 211, 153, 0.4);
             box-shadow: 0 8px 24px rgba(34, 197, 94, 0.06), 0 2px 6px rgba(0,0,0,0.4);
@@ -40,13 +45,9 @@
         }
     }
     
-    /* Shared transitions */
-    .group {
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .group img {
-        transition: transform 0.5s ease;
+    /* Active state for touch feedback */
+    .group:active {
+        transform: scale(0.98);
     }
 </style>
 {% endblock %}
@@ -177,25 +178,73 @@
     });
 </script>
 <script>
-    // Enhanced touch-to-toggle-hover for mobile
+    // Enhanced mobile touch handling
     (function(){
-        // Only run on touch devices or devices without hover capability
-        if (window.matchMedia('(hover: hover)').matches) return;
+        // Only run on touch devices
+        if (!('ontouchstart' in window)) return;
 
         const groups = Array.from(document.querySelectorAll('.group'));
-        let activeGroup = null;
-        let touchStartTime = 0;
-        const LONG_PRESS_DURATION = 500; // milliseconds
-
-        function clearTouches() {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isTouchMove = false;
+        let touchTimeout = null;
+        
+        function clearAllTouches() {
             groups.forEach(g => g.classList.remove('touch'));
-            activeGroup = null;
+            clearTimeout(touchTimeout);
         }
 
         // Handle touch start
         document.addEventListener('touchstart', function(e) {
             const group = e.target.closest('.group');
-            touchStartTime = Date.now();
+            if (!group) {
+                clearAllTouches();
+                return;
+            }
+
+            // Store touch start position
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            isTouchMove = false;
+
+            // Clear any existing touch states
+            clearAllTouches();
+            
+            // Add touch state after a tiny delay to ensure it's intentional
+            touchTimeout = setTimeout(() => {
+                if (!isTouchMove) {
+                    group.classList.add('touch');
+                }
+            }, 50);
+        }, { passive: true });
+
+        // Handle touch move
+        document.addEventListener('touchmove', function(e) {
+            if (!e.touches[0]) return;
+            
+            const moveX = Math.abs(e.touches[0].clientX - touchStartX);
+            const moveY = Math.abs(e.touches[0].clientY - touchStartY);
+            
+            // If moved more than 10px, consider it a scroll
+            if (moveX > 10 || moveY > 10) {
+                isTouchMove = true;
+                clearAllTouches();
+            }
+        }, { passive: true });
+
+        // Handle touch end
+        document.addEventListener('touchend', function() {
+            // Keep the touch state briefly after touch end for visual feedback
+            setTimeout(clearAllTouches, 300);
+        }, { passive: true });
+
+        // Clear touches when page is scrolled
+        window.addEventListener('scroll', clearAllTouches, { passive: true });
+        
+        // Clear touches when switching tabs/windows
+        document.addEventListener('visibilitychange', clearAllTouches);
+        window.addEventListener('blur', clearAllTouches);
+    })();
 
             if (!group) {
                 clearTouches();
