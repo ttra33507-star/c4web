@@ -18,48 +18,95 @@
         transition: all 0.3s ease;
         cursor: pointer;
         position: relative;
+        overflow: hidden;
     }
     
     .group img {
         transition: transform 0.5s ease;
     }
 
-    /* Cart hover indicator */
-    .group::before {
-        content: "Add to Cart";
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        padding: 0.5rem 1rem;
-        background: rgba(52, 211, 153, 0.9);
-        color: #fff;
-        border-radius: 0.5rem;
-        font-size: 0.875rem;
-        font-weight: 600;
+    /* Quick view overlay */
+    .quick-view-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 6, 23, 0.85);
+        z-index: 50;
         opacity: 0;
-        transform: translateY(-10px);
-        transition: all 0.3s ease;
-        z-index: 10;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
     }
 
-    /* Mobile touch styles */
-    @media (max-width: 768px) {
-        .group::before {
-            content: "Add to Cart";
-            position: absolute;
-            top: auto;
-            bottom: 1rem;
-            right: 1rem;
-            padding: 0.75rem 1.5rem;
-            background: rgba(52, 211, 153, 0.95);
-            color: #fff;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            opacity: 1;
-            transform: none;
-            z-index: 10;
-        }
+    .quick-view-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .quick-view-content {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -45%);
+        width: calc(100% - 2rem);
+        max-width: 24rem;
+        background: linear-gradient(to bottom right, rgba(52, 211, 153, 0.1), rgba(15, 23, 42, 0.95));
+        border: 1px solid rgba(52, 211, 153, 0.2);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        opacity: 0;
+        transform: translate(-50%, -40%);
+        transition: all 0.3s ease;
+        z-index: 51;
+    }
+
+    .quick-view-overlay.active .quick-view-content {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+
+    .quick-view-label {
+        display: inline-flex;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: rgb(167, 243, 208);
+        background: rgba(52, 211, 153, 0.1);
+        border: 1px solid rgba(52, 211, 153, 0.2);
+        border-radius: 9999px;
+        margin-bottom: 1rem;
+    }
+
+    .quick-view-title {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .quick-view-description {
+        color: rgb(148, 163, 184);
+        font-size: 0.875rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+    }
+
+    .quick-view-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background: rgb(52, 211, 153);
+        color: rgb(15, 23, 42);
+        font-weight: 600;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .quick-view-button:active {
+        transform: scale(0.98);
+        background: rgb(45, 192, 139);
     }
 
     /* Touch feedback styles */
@@ -200,13 +247,25 @@
 </section>
 {% endblock %}
 
+<!-- Quick View Overlay -->
+<div class="quick-view-overlay" id="quickViewOverlay">
+    <div class="quick-view-content">
+        <span class="quick-view-label">Quick view</span>
+        <h3 class="quick-view-title" id="quickViewTitle"></h3>
+        <p class="quick-view-description" id="quickViewDescription"></p>
+        <a href="#" class="quick-view-button" id="quickViewButton">
+            Order now
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </a>
+    </div>
+</div>
+
 {% block scripts %}
 {{ super() }}
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        // Initialize cart UI
-        cart.updateUI();
-        
         const openers = document.querySelectorAll('[data-modal-open]');
         const closers = document.querySelectorAll('[data-modal-close]');    // Add click handler for cart functionality
     groups.forEach(group => {
@@ -249,43 +308,37 @@
     });
 </script>
 <script>
-    // Cart and Enhanced mobile touch handling
+    // Quick view and touch handling
     (function(){
-        // Cart state management
-        const cart = {
-            items: JSON.parse(localStorage.getItem('cart') || '[]'),
+        const quickViewOverlay = document.getElementById('quickViewOverlay');
+        const quickViewTitle = document.getElementById('quickViewTitle');
+        const quickViewDescription = document.getElementById('quickViewDescription');
+        const quickViewButton = document.getElementById('quickViewButton');
+
+        function showQuickView(title, description, orderUrl) {
+            if (quickViewTitle) quickViewTitle.textContent = title;
+            if (quickViewDescription) quickViewDescription.textContent = description;
+            if (quickViewButton) quickViewButton.href = orderUrl;
+            quickViewOverlay.classList.add('active');
             
-            addItem: function(serviceId, name, price) {
-                const existingItem = this.items.find(item => item.id === serviceId);
-                if (existingItem) {
-                    existingItem.quantity = (existingItem.quantity || 1) + 1;
-                } else {
-                    this.items.push({ id: serviceId, name, price, quantity: 1 });
-                }
-                this.save();
-                this.updateUI();
-                showNotification(`Added ${name} to cart`);
-            },
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
 
-            removeItem: function(serviceId) {
-                this.items = this.items.filter(item => item.id !== serviceId);
-                this.save();
-                this.updateUI();
-            },
+        function hideQuickView() {
+            quickViewOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
 
-            save: function() {
-                localStorage.setItem('cart', JSON.stringify(this.items));
-            },
-
-            updateUI: function() {
-                const cartCount = document.getElementById('cart-count');
-                if (cartCount) {
-                    const totalItems = this.items.reduce((sum, item) => sum + (item.quantity || 1), 0);
-                    cartCount.textContent = totalItems;
-                    cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
-                }
+        // Hide quick view when clicking overlay
+        quickViewOverlay.addEventListener('click', (e) => {
+            if (e.target === quickViewOverlay) {
+                hideQuickView();
             }
-        };
+        });
+
+        // Touch handling for service cards
+        const isTouchDevice = 'ontouchstart' in window;
 
         function showNotification(message) {
             const notification = document.createElement('div');

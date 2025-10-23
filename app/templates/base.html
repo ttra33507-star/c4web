@@ -159,12 +159,6 @@
                     <a href="{{ url_for('main.home') }}" class="rounded-full px-4 py-2 transition {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.home' else 'hover:text-white hover:bg-slate-800/60' }}">Home</a>
                     <a href="{{ url_for('main.services_page') }}" class="rounded-full px-4 py-2 transition {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.services_page' else 'hover:text-white hover:bg-slate-800/60' }}">Services</a>
                     <a href="{{ url_for('main.contact') }}" class="rounded-full px-4 py-2 transition {{ 'bg-slate-800/80 text-white' if request.endpoint == 'main.contact' else 'hover:text-white hover:bg-slate-800/60' }}">Contact</a>
-                    <button type="button" class="relative rounded-full px-4 py-2 transition hover:text-white hover:bg-slate-800/60" id="cart-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-xs font-bold text-white" id="cart-count">0</span>
-                    </button>
                     <a href="{{ url_for('main.dashboard') }}" class="rounded-full px-4 py-2 transition {{ 'bg-slate-800/80 text-white' if request.endpoint and request.endpoint.startswith('main.') and 'dashboard' in request.endpoint else 'hover:text-white hover:bg-slate-800/60' }}">Dashboard</a>
                 </div>
                 <a href="{{ url_for('main.services_page') }}" class="btn-primary h-[40px]  md:hidden lg:block sm:text-[9px] me-1 sm:w-[250px]">Start a project</a>
