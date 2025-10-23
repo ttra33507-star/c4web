@@ -17,16 +17,60 @@
         -webkit-tap-highlight-color: transparent;
         transition: all 0.3s ease;
         cursor: pointer;
+        position: relative;
     }
     
     .group img {
         transition: transform 0.5s ease;
     }
 
-    /* Touch styles (applied via JS) */
+    /* Cart hover indicator */
+    .group::before {
+        content: "Add to Cart";
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
+        background: rgba(52, 211, 153, 0.9);
+        color: #fff;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+
+    /* Mobile touch styles */
+    @media (max-width: 768px) {
+        .group::before {
+            content: "Add to Cart";
+            position: absolute;
+            top: auto;
+            bottom: 1rem;
+            right: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(52, 211, 153, 0.95);
+            color: #fff;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            opacity: 1;
+            transform: none;
+            z-index: 10;
+        }
+    }
+
+    /* Touch feedback styles */
     .group.touch {
         border-color: rgba(52, 211, 153, 0.4) !important;
         box-shadow: 0 8px 24px rgba(34, 197, 94, 0.06), 0 2px 6px rgba(0,0,0,0.4);
+        transform: scale(0.98);
+    }
+    
+    .group.touch::before {
+        background: rgba(52, 211, 153, 0.8);
     }
     
     .group.touch img {
@@ -42,6 +86,11 @@
         
         .group:hover img {
             transform: scale(1.05);
+        }
+
+        .group:hover::before {
+            opacity: 1;
+            transform: translateY(0);
         }
     }
     
@@ -75,7 +124,7 @@
     <div class="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
         <div class="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
             {% for service in services %}
-                <article class="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-900/80 bg-slate-900/50 shadow-lg transition hover:border-emerald-400/40 hover:shadow-glow">
+                <article class="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-900/80 bg-slate-900/50 shadow-lg transition hover:border-emerald-400/40 hover:shadow-glow" data-service-id="{{ service.id }}">
                     <div class="relative">
                         <img src="{{ url_for('static', filename='images/' ~ service.image) }}"
                              alt="{{ service.name }}"
@@ -154,11 +203,33 @@
 {% block scripts %}
 {{ super() }}
 <script>
-    const openers = document.querySelectorAll('[data-modal-open]');
-    const closers = document.querySelectorAll('[data-modal-close]');
+    document.addEventListener("DOMContentLoaded", () => {
+        // Initialize cart UI
+        cart.updateUI();
+        
+        const openers = document.querySelectorAll('[data-modal-open]');
+        const closers = document.querySelectorAll('[data-modal-close]');    // Add click handler for cart functionality
+    groups.forEach(group => {
+        group.addEventListener('click', (e) => {
+            // Get service details from data attributes
+            const serviceId = group.getAttribute('data-service-id');
+            const serviceName = group.querySelector('h3').textContent;
+            const priceElement = group.querySelector('[data-service-price]');
+            const price = priceElement ? parseFloat(priceElement.textContent.replace('$', '')) : 0;
+
+            // If clicking the modal open button, let that handle the click
+            if (e.target.closest('[data-modal-open]')) {
+                return;
+            }
+
+            // Add to cart
+            cart.addItem(serviceId, serviceName, price);
+        });
+    });
 
     openers.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent triggering the cart add
             const id = btn.getAttribute('data-modal-open');
             const dialog = document.getElementById(id);
             if (dialog) {
@@ -178,19 +249,70 @@
     });
 </script>
 <script>
-    // Enhanced mobile touch handling
+    // Cart and Enhanced mobile touch handling
     (function(){
-        // Only run on touch devices
-        if (!('ontouchstart' in window)) return;
+        // Cart state management
+        const cart = {
+            items: JSON.parse(localStorage.getItem('cart') || '[]'),
+            
+            addItem: function(serviceId, name, price) {
+                const existingItem = this.items.find(item => item.id === serviceId);
+                if (existingItem) {
+                    existingItem.quantity = (existingItem.quantity || 1) + 1;
+                } else {
+                    this.items.push({ id: serviceId, name, price, quantity: 1 });
+                }
+                this.save();
+                this.updateUI();
+                showNotification(`Added ${name} to cart`);
+            },
 
+            removeItem: function(serviceId) {
+                this.items = this.items.filter(item => item.id !== serviceId);
+                this.save();
+                this.updateUI();
+            },
+
+            save: function() {
+                localStorage.setItem('cart', JSON.stringify(this.items));
+            },
+
+            updateUI: function() {
+                const cartCount = document.getElementById('cart-count');
+                if (cartCount) {
+                    const totalItems = this.items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                    cartCount.textContent = totalItems;
+                    cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
+                }
+            }
+        };
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-emerald-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
+        }
+
+        const isTouchDevice = 'ontouchstart' in window;
         const groups = Array.from(document.querySelectorAll('.group'));
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let isTouchMove = false;
-        let touchTimeout = null;
         
-        function clearAllTouches() {
-            groups.forEach(g => g.classList.remove('touch'));
+        // Handle both touch and mouse devices
+        if (isTouchDevice) {
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let isTouchMove = false;
+            let touchTimeout = null;
+            let activeElement = null;
+            
+            function clearAllTouches() {
+                groups.forEach(g => g.classList.remove('touch'));
+                activeElement = null;
+            }
             clearTimeout(touchTimeout);
         }
 
