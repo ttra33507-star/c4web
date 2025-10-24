@@ -204,14 +204,14 @@
                             </p>
                         </div>
                         <div class="mt-auto">
-                            <div class="flex items-center justify-between text-sm">
+                            <!-- <div class="flex items-center justify-between text-sm">
                                 <span class="font-semibold text-emerald-300">${{ "%.2f"|format(service.price) }}</span>
                                 <button type="button"
                                         class="hidden sm:inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-200 hover:border-emerald-400/60 hover:text-emerald-100"
                                         data-modal-open="service-{{ service.id }}">
                                     Specs
                                 </button>
-                            </div>
+                            </div> -->
                             <a href="{{ url_for('main.order_service', service_id=service.id) }}" class="btn-primary mt-4 w-full sm:flex">
                                 <span class="hidden sm:inline">Order via PayWay</span>
                                 <span class="sm:hidden">Buy Now - ${{ "%.2f"|format(service.price) }}</span>
